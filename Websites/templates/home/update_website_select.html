@@ -1,0 +1,28 @@
+{% extends 'home/index.html' %}
+{% block nav %}
+<h2 style="color:#131D06;">
+	<a href="{% url 'home' %}">Go to Homepage</a>
+</h2>
+<h3 style="color:#131D06;">
+	<a href="{% url 'control_panel' %}">Go to Control_panel</a>
+</h3>
+{% endblock %}{% block header %}
+{% endblock %}
+{% block content %}
+<div class="container" >
+{% for name in category %}
+<h2 > {{name.category}} </h2>
+
+<select class="form-control" onChange="window.document.location.href=this.options[this.selectedIndex].value;" >
+ 	  
+ 	   <option> -------------</option> 
+ 	      {% for website in name.websites.all %}
+ 	   <option value="{{website.pk}}"> {{website.website}}</option> 
+ 	    {% endfor %}
+ 	  
+ 	 </select>
+ 	 {% endfor %}
+ 	 <h1>Hello </h1>
+ 	 <a href="{% url 'update_single_website_select' %}">Click to update single websites </a>
+ 	 </div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "home/index.html" %}
+{% block title %}
+<title>
+    Links add page
+  </title>
+{% endblock %}
+
+{% block nav %}
+<h2 style="color:#131D06;">
+	<a href="{% url 'home' %}">Go to Homepage</a>
+</h2>
+<h3 style="color:#131D06;">
+	<a href="{% url 'control_panel' %}">Go to Control_panel</a>
+</h3>
+{% endblock %}{% block header %}
+{% endblock %}
+{% block content %}
+<div class="body2">
+      <div class="container-fluid body2"  >
+      	<div class="jumbotron shadow rounded s-center " id="s-head">
+      		<h3>Links add Page</h3>
+      	</div>
+      	
+      		<div >
+      			<h4>How many websites do you want to add</h4>
+      	
+      			<select class="s-select" id="select" onchange="select_data(this.options[this.selectedIndex].value)" > 
+      				
+      			</select>
+      				<h4 class="s-center">Or</h4>
+      			<div >
+<div class="input-group mb-3">
+ <input type="number" class="form-control" placeholder="Number of forms" aria-label="Number of forms" aria-describedby="button-addon2" id="num"> 
+ <div class="input-group-append">
+ <button class="btn btn-outline-info " style="color:#000000" type="button" onclick="select_data(document.getElementById('num').value)" >Enter Number</button> </div> </div>
+ 
+</div>
+      			
+      				
+      		</div>
+      		<h3 class="s-web-head">Enter all websites</h3>	
+ 	
+      	
+      	<form  method="post" >
+      	{% csrf_token %}
+      	
+      <label style="font-size:25px;">Select Category</label>
+      		  <select class="form-control" id="" name="category" value="this.options[this.selectedIndex].value" onchange="show(this.options[this.selectedIndex].getAttribute('data-tags'),this.options[this.selectedIndex].getAttribute('data-tags-id'))" >
+ 	  
+ 	   <option> -------------</option> 
+ 	      {% for category in Category %}
+ 	   <option data-tags="[{% for i in category.sub_categories.all %}'{{i.Sub_Category}}',{% endfor %}]" data-tags-id="[{% for i in category.sub_categories.all %}{{i.pk}},{% endfor %}]" value="{{category.pk}}"> {{category}}</option> 
+ 	    {% endfor %}
+ 	  
+ 	 </select>
+ 	 
+ 	 
+ 	   
+      	<div class="form-group">
+      			
+      	<label style="font-size:25px;">Select Tags or subcategories</label>
+ 	
+ 	     <select multiple class="form-control" id="tags" name="Tags" style="visibility:hidden" >
+ 	 </select>
+ 	 
+ 
+ 	  </div>
+ 	  <h3>{{form.Countries.label}}</h3>
+ 	  <div style="display:flex;">
+ 	  {{form.Countries}}
+ 	  	<button type="button" class="btn btn-sm btn-primary" style="width:25%;" onclick="markAllSelect('countriesSelect');"  >Mark all</button>
+ 	  	</div>
+      	<div id="main_form" class="row" style="background:#F2E9E0;">
+      
+      	</div>
+     
+      	</form>
+      	
+      </div>
+      </div>
+    
+    <script>
+    	
+var inc = 0;
+while(inc<=100){
+	document.getElementById("select").innerHTML += "<option >" + inc + "</option>";
+	inc+=10;
+}
+
+function  select_data(value){
+	var form = document.getElementById("main_form");
+	if (value>100){
+		return alert("Forms generated can't be more than 100");
+	}
+	else {
+
+form.innerHTML=null;
+
+	for(inc=1;inc<=value;inc++){
+		 form.innerHTML+="<div class=\"col-md-6 col-lg-4 \" style=\"background-color:#7EAADA; margin:10% 0;\" >"+"<h5 style=\"text-align:center;\">Enter number for numbered websites</h5> <input class=\"form-control w-25 mx-auto\" type=\"number\" name=\"Number\" placeholder=\"optional\"> <h5 style=\"text-align:center;\">Enter website name</h5>"+"<input name=\"website\" class=\"form-control mb-3 w-100\" type=\"text\" placeholder=\"Enter website name\" required >"+"<h5 style=\"text-align:center;\">Enter website url </h5>"+"<input name=\"url\" class=\"form-control mb-3 w-100 \" type=\"text\" placeholder=\"Enter website url\" value=\"http://\" required >"+"</div> <hr>" ;
+	}
+	form.innerHTML+=" 	<div style=\"margin:0 auto 10% auto;\"> <button class=\"s-submit w-100 \" type=\"submit\" id=\"submit\">Submit websites</button> </div>";
+}
+}
+function show(data,id){
+
+document.getElementById("tags").style.visibility = "visible";
+document.getElementById("tags").innerHTML = null;
+eval("var tags = " + data);
+eval("var tags_id = "+id);
+for (i in tags){
+
+document.getElementById("tags").innerHTML += "<option value='"+ tags_id[i]+"'>"+tags[i]+"</option>";
+
+}
+
+}
+function markAllSelect(id){
+	var select = document.getElementById(id);
+	for(var i=0;i<select.options.length;i++){
+		select.options[i].selected=true;
+	}
+}
+    </script>
+{% endblock %}

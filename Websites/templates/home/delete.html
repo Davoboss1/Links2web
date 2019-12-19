@@ -1,0 +1,32 @@
+{% extends 'home/index.html' %}
+{% block nav %}
+<h2 style="color:#131D06;">
+	<a href="{% url 'home' %}">Go to Homepage</a>
+</h2>
+<h3 style="color:#131D06;">
+	<a href="{% url 'control_panel' %}">Go to Control_panel</a>
+</h3>
+{% endblock %}{% block header %}
+{% endblock %}
+{% block content %}
+<div class="container-fluid body2">
+	<h2>Category Page </h2>
+	
+	<form method="post">
+		{% csrf_token %}
+	<div class="category-form" >
+		<h3 style="font-family:monospace; color:#2A0125;">
+			Are you sure, You want to delete {{object}}
+	</h3>
+
+	<button class="btn btn-info" type="submit">
+		Submit
+	</button>
+	</div>
+	</form>
+	
+
+</div>
+
+
+{% endblock %}

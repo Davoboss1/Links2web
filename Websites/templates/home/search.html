@@ -1,0 +1,152 @@
+{% extends 'home/index.html' %}
+{% load staticfiles %}
+	  {% block content %}
+
+	
+	<div class="container-fluid" id="categories">
+
+	{% if result.exists %}
+		<h3 style="text-align:center;">Categories</h3>
+		<hr>			
+				<div class="row">
+					
+				
+			{% for data in result %}
+			
+					
+			<div class="col-12 col-sm-6 col-md-4 col-lg-4">
+				
+				<ul style="list-style-type:none; margin:0; padding:0;">
+				
+				<li >
+		
+						<div class="categories row align-items-center " >
+						<div class="col-3 col-sm-3 col-md-3 col-lg-3"><img style="width:50px;
+	height:50px;" src="{{data.icon}}"></div>
+					<div class="col-7 col-sm-7 col-md-7 col-lg-7 ">  <a href="{% url 'websites' data.pk data.category %}" style="color:white;"><h5 >{{data.category}} </h5> </a></div>
+					<div class="col-2 col-sm-2 col-md-2 col-lg-2">	<div class="dropdown dropdown-icon" >
+					<a class="now-ui-icons arrows-1_minimal-down" style="color:white; padding:30%;"  href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </a>
+			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+			{% for sub_categories in data.sub_categories.all %}
+			<a class="dropdown-item" href="{% url 'websites' data.pk data.category sub_categories %}">{{sub_categories}}</a>
+			
+			<hr class="no-space"> 
+			{% endfor %}
+			
+			</div> </div>
+		 </div>
+					</div>
+					 
+				</li>
+				
+				
+		
+	
+		<hr class="line">
+			
+				</ul>
+			
+				
+			</div>
+			{% endfor %}
+				
+				
+			
+			
+			
+					
+					
+					
+			<!--
+			End of row
+			-->
+		</div>
+{% else %}
+	{% if type == 'website' %}
+	{% else %}
+<div class="alert alert-danger mt-3" role="alert">
+  <h5>Sorry</h5>
+  <h6>The Categories you searched are not available</h6>
+  
+</div>
+{% endif%}
+{% endif %}	
+		
+	</div>
+	<div id="websites" class="container-fluid">
+	{% if result_websites.object_list.exists %}		
+		<h3 style="text-align:center;">Websites</h3>
+	
+		  <div>
+      		<ol class="all-websites-main-list row" id="main-ordered-list">
+      			
+      					{% for website in result_websites %}
+      		<li class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+      			<div class="all-websites-list " >
+      			
+      				<h5 class="text-center">
+      			
+      			<a  href="http://{{website.url|cut:'http://'}}">{{website.website}}</a></h5>
+      		
+      			</div>
+      		</li>
+      			{% endfor %}
+      		
+      			{% if result_websites.has_next %}
+      					<button class="btn btn-info btn-sm " style="width:90%" id="loadmore-btn" value="{{result_websites.number}}">Load More</button>
+      			{% endif %}
+      		</ol>
+      	
+      </div>
+      
+      
+     <div class="push-right" style="display:flex; margin-top:0;">
+      	<button id="theme-button" class="theme-button-light " onclick="changeTheme_ordered()">Change Theme</button>
+      	</div>
+      	{% else %}
+	{% if type == 'category' %}
+	{% else %}
+	<div class="container">
+<div class="alert alert-danger" role="alert">
+  <h5>Sorry</h5>
+  <h6>The Websites you searched are not available</h6>
+  </div>
+</div>
+{% endif%}
+      {% endif %}
+	
+		</div>
+		
+	
+  {% endblock %}
+  
+  {% block end %}
+   <script>
+   	$(function() {
+$("#loadmore-btn").on("click",function(){
+	 	var btn = $("#loadmore-btn");
+	 	
+	btn.html('<span>Loading...<i class="now-ui-icons loader_refresh spin"</i></span>');
+	var div = $('#main-ordered-list');
+	var link = $(this);
+	var page_no = new Number("{{websites.number}}");
+	
+	
+		$.ajax({ url: '{{request.get_host}}{{request.get_full_path}}', 
+		type: 'GET', 
+		data:{		
+		'page': new Number(btn.attr("value"))+1},
+		// This is the default though, you don't actually need to always mention it 
+		success: function(data) { 
+		
+		div.append(data);
+		btn.remove();
+		}, 
+		failure: function(data) { 
+		alert('Failed to delete');
+		 } }); 
+	
+});
+ });
+   </script>
+  {% endblock %}

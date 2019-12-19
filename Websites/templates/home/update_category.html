@@ -1,0 +1,80 @@
+{% extends 'home/index.html' %}
+{% block nav %}
+<h2 style="color:#131D06;">
+	<a href="{% url 'home' %}">Go to Homepage</a>
+</h2>
+<h3 style="color:#131D06;">
+	<a href="{% url 'control_panel' %}">Go to Control_panel</a>
+</h3>
+{% endblock %}{% block header %}
+{% endblock %}
+{% block content %}
+<div class="container-fluid body2">
+	<h2>Category Page </h2>
+	
+	<form method="post">
+		{% csrf_token %}
+	<div class="category-form" >
+	
+	<h3 style="font-family:monospace; color:#2A0125;">
+			{{form.List_Type.label}}
+	</h3>
+
+	{{form.List_Type}}
+	
+		<h3 style="font-family:monospace; color:#2A0125;">
+			{{form.category.label}}
+	</h3>
+
+	{{form.category}}
+	
+		<h3 style="font-family:monospace; color:#2A0125;">
+			{{form.icon.label}}
+	</h3>
+
+	{{form.icon}}
+	
+		<h3 style="font-family:monospace; color:#2A0125;">
+			Sub Categories
+	</h3>
+
+
+<select class="form-control mb-3" name="sub_categories" multiple>
+{% for sub_categories in object.sub_categories.all %}
+<option value="{{sub_categories.pk}}" selected>{{sub_categories}}</option>
+{% endfor %}
+{% for sub_categories in Sub_Categories %}
+<option value="{{sub_categories.pk}}" >{{sub_categories}}</option>
+{% endfor %}
+
+<select>
+
+
+	<h3 style="font-family:monospace; color:#2A0125;">
+			Enter more tags
+	</h3>
+<div class="input-group mb-3 w-50"> <input id="tag-number" type="number" class="form-control" placeholder="Enter No" aria-label="Number" aria-describedby="button-addon2"> <div class="input-group-append" > <button class="btn btn-outline-secondary" type="button" onclick="tag_click(document.getElementById('tag-number').value)">Button</button> </div> </div>
+
+<div class="row" id="tag-container" style="background:#F2E9E0;">
+	
+	
+</div>
+	<button class="btn btn-info" type="submit">
+		Submit
+	</button>
+	</div>
+	</form>
+	
+
+</div>
+<script>
+	function tag_click(number){
+document.getElementById("tag-container").innerHTML=null;		
+		for(i=1;i<=number;i++){
+			document.getElementById("tag-container").innerHTML+="<div class=\"col-md-6 col-lg-4 \"> <input class=\"mb-3\" type=\"text\" placeholder=\"Enter sub category\" name=\"new_sub_categories\"></div>";
+		}
+		
+	}
+	
+</script>
+{% endblock %}

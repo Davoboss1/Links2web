@@ -1,0 +1,47 @@
+{% extends 'home/login-page.html' %}
+{% block content %}
+     <div class="section section-contact-us text-center" style="background:#F2FDFF;">
+      <div class="container">
+        <h2 class="title">Contact us</h2>
+        <p class="description">Your reveiw is very important.</p>
+        
+        <div class="row">
+          <div class="col-lg-6 text-center col-md-8 ml-auto mr-auto">
+          <form method="post" >
+          {% csrf_token %}
+          	  <div class="input-group input-lg">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="now-ui-icons ui-1_send"></i></span>
+              </div>
+              <input type="text" class="form-control" placeholder="Category" value="{{type}}" readonly name="subject">
+            </div>
+            <div class="input-group input-lg">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="now-ui-icons users_circle-08"></i>
+                </span>
+              </div>
+              <input type="text" class="form-control" placeholder=" Name..." name="name" required>
+            </div>
+            <div class="input-group input-lg">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="now-ui-icons ui-1_email-85"></i>
+                  
+                </span>
+              </div>
+              <input type="text" class="form-control" placeholder="Email..." name="email" required>
+            </div>
+            <div class="textarea-container">
+              <textarea class="form-control"  rows="4" cols="80" placeholder="Type a message..." name="message" required></textarea>
+            </div>
+            <div class="send-button">
+              <button  type="submit" class="btn btn-primary btn-round btn-block btn-lg">Send Message</button>
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+{% endblock %}

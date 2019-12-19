@@ -1,0 +1,97 @@
+{% extends 'home/index.html' %}
+{% block style %}
+<style>
+	.card-header{
+		border: 1px solid #975252;
+	}
+</style>
+{% endblock %}
+{% block nav %}
+<h2 style="color:#131D06;">
+	<a href="{% url 'home' %}">Go to Homepage</a>
+</h2>
+<h3 style="color:#131D06;">
+	<a href="{% url 'control_panel' %}">Go to Control_panel</a>
+</h3>
+{% endblock %}{% block header %}
+{% endblock %}
+{% block content %}
+
+<div class="container body2">
+<div class="row">
+	<div class="col-12 col-sm-12 ">
+		<h3>Delete Websites</h3>
+		
+		
+		<div class="accordion" id="website-accordion"> 
+		 {% for category in categories %}
+		 <div class="card"> <div class="card-header" id="headingThree"> <h5 class="mb-0"> <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#{{category.category|slugify}}{{category.pk}}" aria-expanded="false" aria-controls="{{category.category|slugify}}{{category.pk}}"> {{category.category}}</button> </h5> </div> <div id="{{category.category|slugify}}{{category.pk}}" class="collapse" aria-labelledby="headingThree" data-parent="#website-accordion">
+		 	
+		 	 <div class="card-body">
+		 	 	
+		
+		 	 	  {% for websites in category.websites.all %}
+		 	 
+		<div class="input-group mb-3"> <input   type="text" class="form-control" aria-label="delete" aria-describedby="delete-button" value="{{websites.website}}" disabled> <div class="input-group-append">
+			 <button id="{{websites.pk}}" class="btn btn-outline-danger submit" type="button"  >Delete</button> 
+			 </div>	 
+			 </div>
+			  {% endfor %}
+			   </div> 
+		 	 
+		 	 </div>
+		 
+		 <!-- end of card -->		 
+		  </div>
+		 {% endfor %}			 	 
+		 <!-- end of accordion -->
+		  </div>  	
+		   
+			 	  
+			 	
+		
+		 
+		
+		
+		
+		
+		
+	
+			 
+			  </div>
+		
+		
+	</div>
+</div>
+	
+
+{% endblock %}
+{% block end %}
+<script>
+	
+	var button_id;
+
+	$(function() {
+$(".submit").on("click",function(){
+	 button_id = document.getElementById(this.id);
+		$.ajax({ url: 'http://{{request.get_host}}{{request.path}}', 
+		type: 'POST', 
+		data:{ csrfmiddlewaretoken: '{{ csrf_token }}',
+		pk: this.id },
+		// This is the default though, you don't actually need to always mention it 
+		success: function(data) { 
+		
+		button_id.className="btn btn-success";
+		button_id.innerHTML ="Deleted";
+		
+		}, 
+		failure: function(data) { 
+		alert('Failed to delete');
+		 } }); 
+	
+});
+ });
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'home/index.html' %}
+{% block nav %}
+<h2 style="color:#131D06;">
+	<a href="{% url 'home' %}">Go to Homepage</a>
+</h2>
+<h3 style="color:#131D06;">
+	<a href="{% url 'control_panel' %}">Go to Control_panel</a>
+</h3>
+{% endblock %}{% block header %}
+{% endblock %}
+{% block content %}
+<div class="container-fluid body2">
+	<h2>Category Page </h2>
+	
+	<form method="post">
+		{% csrf_token %}
+	<div class="category-form" >
+	<h3 style="font-family:monospace;">
+			{{form.Countries.label}}
+	</h3>
+	{{form.Countries}}
+	<h3 style="font-family:monospace;">
+			{{form.Number.label}}
+	</h3>
+
+	{{form.Number}}
+	
+		<h3 style="font-family:monospace;">
+			{{form.category.label}}
+	</h3>
+
+	{{form.category}}
+	
+		<h3 style="font-family:monospace;">
+			{{form.website.label}}
+	</h3>
+
+	{{form.website}}
+	 
+	 	<h3 style="font-family:monospace;">
+			{{form.url.label}}
+	</h3>
+
+	{{form.url}}
+	
+		<h3 style="font-family:monospace;">
+			{{form.Tags.label}}
+	</h3>
+	
+	
+	<h3 style="font-family:monospace;">
+			Chose Tags
+	</h3>
+	<select name="Tags" multiple>	
+	
+{% for data in category.sub_categories.all %}
+
+{% if data in object.Tags.all %}
+
+<option value="{{data.pk}}" selected>{{data.Sub_Category}}</option>
+{% else %}
+
+<option value="{{data.pk}}">{{data.Sub_Category}}</option>
+{% endif %}
+
+{% endfor %}
+</select>
+	<button class="btn btn-info" type="submit">
+		Submit
+	</button>
+	</div>
+	</form>
+	
+
+</div>
+
+{% endblock %}

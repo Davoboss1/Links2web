@@ -1,0 +1,56 @@
+	{% for website in websites %}
+      		<li class="col-12 col-lg-6 col-md-6">
+      			<div class="all-websites-list " >
+      			
+      				<h5 class="text-center">
+      			
+      			<a  href="http://{{website.url|cut:'http://'}}">{{website.website}}</a></h5>
+      		
+      			</div>
+      		</li>
+      			{% endfor %}
+      	
+      	{% if Category.List_Type == "OL" %}
+      			{% if websites.has_next %}
+      			
+      					<button class="btn btn-info btn-sm " style="width:90%;" id="loadmore-btn" value="{{websites.number}}">Load More</button>
+      			
+      			{% endif %}
+      	{% elif Category.List_Type == "UL" %}
+      	{% if websites.has_next %}
+      			
+      					<button class="btn btn-info btn-sm " style="margin-left:10%; width:80%;" id="loadmore-btn" value="{{websites.number}}">Load More</button>
+      			
+      			{% endif %}
+      			{% endif %}
+      			
+      			  <script>
+   	$(function() {
+$("#loadmore-btn").on("click",function(){
+	 	var btn = $("#loadmore-btn");
+	 	
+	btn.html('<span>Loading...<i class="now-ui-icons loader_refresh spin"</i></span>');
+	var div = $('#main-ordered-list');
+	var link = $(this);
+	var page_no = new Number("{{websites.number}}");
+	
+		$.ajax({ url: 'https://{{url_path}}', 
+		type: 'GET', 
+		data:{		
+		'page': new Number(btn.attr("value"))+1},
+		// This is the default though, you don't actually need to always mention it 
+		success: function(data) { 
+		
+		div.append(data);
+		btn.remove();
+		}, 
+		failure: function(data) { 
+		alert('Failed to delete');
+		 } }); 
+	
+});
+ });
+   </script>
+
+     
+      			
