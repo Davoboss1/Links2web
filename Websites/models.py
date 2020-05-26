@@ -25,9 +25,9 @@ class Categories(models.Model):
 	)
 
 	List_Type = models.CharField(max_length=2,choices=LIST_CHOICES,default='UL')
-	icon = models.URLField(help_text="Enter Image Link",default="http://")
+	icon = models.ImageField(help_text="Select image to upload",upload_to = 'categories',null=True,blank=True)
 	category = models.CharField(max_length=500)
-	sub_categories = models.ManyToManyField(Sub_Categories,related_name="sub_categories")
+	sub_categories = models.ManyToManyField(Sub_Categories,related_name="categories")
 	def __str__(self):
 		return self.category
 
@@ -48,10 +48,10 @@ class Countries(models.Model):
 	def __str__(self):
 		return "{} : {}".format(self.Country_code,self.Country_name)
 class Websites(models.Model):
-	Countries = models.ManyToManyField(Countries,null=True,blank=True)
+	Countries = models.ManyToManyField(Countries,blank=True)
 	Number = models.IntegerField(null=True,blank=True)
 	category = models.ForeignKey(Categories,related_name="websites",default=1,on_delete=models.CASCADE)
-	Tags = models.ManyToManyField(Sub_Categories,related_name="Tags",null=True,blank=True)
+	Tags = models.ManyToManyField(Sub_Categories,related_name="Tags",blank=True)
 	url = models.URLField(default="http://")
 	website =models.CharField(max_length=250,default="None")
 	def __str__(self):

@@ -27,8 +27,14 @@ class websites_serializers(serializers.ModelSerializer):
 
 
 class categories_serializers(serializers.ModelSerializer):
-	websites = websites_serializers(many=True)
 	sub_categories = serializers.StringRelatedField(many=True)
+	icon = serializers.SerializerMethodField("get_icon_url")
+	def get_icon_url(self,obj):
+		try:
+			request = self.context['request']
+			return request.get_host()+str(obj.icon.url)
+		except:
+			return None
 	class Meta:
 		model = Categories
 		fields = ('pk','List_Type','icon','category','sub_categories','websites',)

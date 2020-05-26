@@ -51,9 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-'django.middleware.cache.UpdateCacheMiddleware',
 'django.middleware.common.CommonMiddleware',
-'django.middleware.cache.FetchFromCacheMiddleware',]
+]
 
 ROOT_URLCONF = 'Links2web.urls'
 
@@ -80,15 +79,15 @@ WSGI_APPLICATION = 'Links2web.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-	'default': {
+'default': {
         'ENGINE': 'django.db.backends.mysql',
         'HOST' : 'Links2web.mysql.pythonanywhere-services.com',
         'NAME': 'Links2web$Links2webdb',
         'PASSWORD' : 'Davo2001$',
     },
 }
-'''
- 'default': {
+'''    
+	 'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
@@ -153,5 +152,6 @@ GEOIP_PATH = str(BASE_DIR)+"/GeoLite2-Country_20190827/"
 
 STATIC_ROOT = str(BASE_DIR) + '/static/'
 STATIC_URL = '/static/'
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #STATICFILES_DIRS = [str(BASE_DIR)+"/static/",]

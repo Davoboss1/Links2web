@@ -9,7 +9,7 @@
   </title>
   {% endblock %}
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
-  {% load staticfiles %}
+  {% load static %}
   <!--     Fonts and icons     -->
   <!--
     <link rel="stylesheet" href="./assets/css/now-ui-kit.css">
@@ -28,59 +28,63 @@
   <link rel="stylesheet" href="{% static './assets/css/style.css' %}">
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="./assets/demo/demo.css" rel="stylesheet" />
-  {% block style %}<style></style>{% endblock %}
+  {% block style %}
+  <style>
+  ul#head-list li a{
+  	min-width:150px; text-align:center; max-width:250px;
+  }
+  
+   ul#head-list li.has-sub a{
+	min-width:150px; text-align:center; max-width:350px;
+  }
+  </style>
+  {% endblock %}
 </head>
 
 <body style="background:#020525; color:white;">
-	{% block nav %}
-
-	  <nav class="navbar navbar-dark bg-dark fixed-top " id="nav-b">
-	  	
-	  <div id='cssmenu' class="container-fluid" >
-<ul id="head-list" style="display:flex;">
-   <li><a href="{% url 'home' %}"><span>Home</span></a></li> 
-   <li class='active has-sub '><a style="display:flex;" onclick="s();" ><span>Search</span> </a>
-      <ul style="max-height:350px; overflow-y:auto;">
-      	<li >
-      		
-      	<form method="get" class="input-header-list" action="#categories">
-  		<input class="form-control " type="text" name="search_all_result" placeholder="Search all" style="height:40px; width:250px; margin:10px;"> <button type="submit"  class="btn btn-info" style="height:40px;margin: 10px 5px;"><span class="fas fa-search"></span></button>
-  		</form>
-  	</li>
-      	<li>
-      		<form method="get" class="input-header-list" action="#categories">
-  		<input class="form-control" type="text" placeholder="Search categories" name="search_categories_result" style="height:40px; width:250px; margin:10px;"> <button class="btn btn-info" style="height:40px;margin: 10px 5px;"><span class="fas fa-search" ></span></button>
-  		</form>
-  	</li>
-  	
-  	<li  >
-  		<form method="get" class="input-header-list" action="#websites" >
-  		<input class="form-control" name="search_website_result" type="text" placeholder="Search websites" style="height:40px; width:250px; margin: 10px;"> <button class="btn btn-info" style="height:40px; margin: 10px 5px;"><span class="fas fa-search"></span></button>
-  		</form>
-  	</li>
-      	    
-      </ul>
-   </li>
-      <li class='active has-sub'><a href='#' style="display:flex;"><span>Categories </span> </a>
-      <ul style="max-height:350px; overflow-y:auto;">
-      	{% for data in category %}
-      	<li>
-      <a href="{% url 'websites' data.pk data.category %}" style="background:#000000; color:#D2EBFB;"><img src="{{data.icon}}"  style="height:30px; width:30px;border-radius:5px; padding-right:30%;" > {{data.category}}</a>		
-      		
-      	</li>
+{% block nav %}
+<nav class="navbar navbar-dark bg-dark fixed-top " id="nav-b">
+	<div id='cssmenu' class="container-fluid" >
+		<ul id="head-list" style="display:flex;">
+		<li ><a href="{% url 'home' %}" ><span >Home</span></a></li> 
+		<li class='active has-sub '><a style="display:flex;" onclick="s();" ><span>Search</span> </a>
+		<ul style="max-height:350px; overflow-y:auto; min-width:300px;">
+			<li >
+				<form method="get" class="input-header-list" action="#categories">
+					<input class="form-control " type="text" name="search_all_result" placeholder="Search all" style="height:40px; width:250px; margin:10px;"> <button type="submit"  class="btn btn-info" style="height:40px;margin: 10px 5px;"><span class="fas fa-search"></span></button>
+				</form>
+			</li>
+			<li>
+				<form method="get" class="input-header-list" action="#categories">
+					<input class="form-control" type="text" placeholder="Search categories" name="search_categories_result" style="height:40px; width:250px; margin:10px;"> <button class="btn btn-info" style="height:40px;margin: 10px 5px;"><span class="fas fa-search" ></span></button>
+				</form>
+			</li>
+			<li>
+				<form method="get" class="input-header-list" action="#websites" >
+					<input class="form-control" name="search_website_result" type="text" placeholder="Search websites" style="height:40px; width:250px; margin: 10px;"> <button class="btn btn-info" style="height:40px; margin: 10px 5px;"><span class="fas fa-search"></span></button>
+				</form>
+			</li>
+		</ul>
+	</li>
+    <li class='active has-sub'><a href='#' style="display:flex;"><span>Categories </span> </a>
+    	<ul style="max-height:350px; overflow-y:auto; min-width:200px;">
+    	{% for data in category %}
+    		<li>
+    			<a href="{% url 'websites' data.pk data.category %}" style="background:#000000; color:#D2EBFB;"><img src="{{data.icon}}"  style="height:30px; width:30px;border-radius:5px; padding-right:30%;" > {{data.category}}</a>		
+    		</li>
         {% endfor %}
       </ul>
    </li> 
    <li class="has-sub active"><a href='#' ><span>Contact</span></a>
-   <ul style="max-height:350px; overflow-y:auto;">
-   	<li ></li>
-   	<li class="has-sub"><a href="" style="background:#171D34; color:white; ">Contact Links2web</a>
-   	<ul>
-   			<li><a href="{% url 'contact' 'Suggest websites or categories' %}" style="background:#171D34; color:white;">Suggest websites or categories</a></li>
-   				<li><a href="{% url 'contact' 'Reporta Issues' %}" style="background:#171D34; color:white;">Report Issues</a></li>
-   					<li><a href="{% url 'contact' 'Send message' %}" style="background:#171D34; color:white;">Send message</a></li>
-   		</ul>
-   	</li>
+   	<ul style="max-height:350px; min-width:300px; overflow-y:auto;">
+  	 	<li ></li>
+ 	  	<li class="has-sub"><a href="" style="background:#171D34; color:white; ">Contact Links2web</a>
+ 		  	<ul>
+   				<li><a href="{% url 'contact' 'Suggest websites or categories' %}" style="background:#171D34; color:white;">Suggest websites or categories</a></li>
+	   			<li><a href="{% url 'contact' 'Reporta Issues' %}" style="background:#171D34; color:white;">Report Issues</a></li>
+   				<li><a href="{% url 'contact' 'Send message' %}" style="background:#171D34; color:white;">Send message</a></li>
+   			</ul>
+   		</li>
    		<li class="has-sub" style="width:200px;"><a href="" >Contact Developer</a>
    			<ul>
    				<li><a href="https://facebook.com/david.akinfenwa.9" style="background:#171D34; color:white;"> <i class="fab fa-facebook"></i> Facebook</a></li>
@@ -94,9 +98,9 @@
    	</ul>
    </li>
    {% if user.is_authenticated %}
-     <li ><a href="{% url 'Login' %}" class="control-panel-width"><span>Control Panel<span></a></li>
-     {% endif %}
-  <li class='last'><a href='#'><span>About<span></a></li>
+   <li ><a href="{% url 'Login' %}" class="control-panel-width"><span>Control Panel<span></a></li>
+   {% endif %}
+   <li class='last'><a href='#'><span>About<span></a></li>
 </ul>
 </div>
 </nav>
@@ -208,7 +212,7 @@
 				<li >
 		
 						<div class="categories row align-items-center " >
-						<div class="col-3 col-sm-3 col-md-3 col-lg-3"><img style="width:50px; height:50px; border:1px solid #1D96CE ;border-radius:5px; padding:2px;" src="{{data.icon}}" alt="icon"></div>
+						<div class="col-3 col-sm-3 col-md-3 col-lg-3"><img style="width:50px; height:50px; border:1px solid #1D96CE ;border-radius:5px; padding:2px;" src="{% if data.icon %}{{data.icon.url}}{% endif %}" alt="icon"></div>
 					<div class="col-7 col-sm-7 col-md-7 col-lg-7 ">  <a href="{% url 'websites' data.pk data.category %}" style="color:white;"><h5 >{{data.category}} </h5> </a></div>
 	 				<div class="col-2 col-sm-2 col-md-2 col-lg-2">	<div class="dropdown dropdown-icon" >
 					<a class="now-ui-icons arrows-1_minimal-down" style="color:white; padding:30%;"  href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </a>

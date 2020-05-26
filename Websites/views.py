@@ -59,6 +59,8 @@ def visitor_ip_address(request):
 def visitors_location(ip):
 	geoip = GeoIP2()
 	user_country = geoip.country(ip)
+	if user_country["country_code"] is None:
+		user_country["country_code"] = "OT"
 	try:
 		country = Countries.objects.get(Country_code=user_country['country_code'],Country_name=user_country['country_name'])
 	except Countries.DoesNotExist:
@@ -235,7 +237,7 @@ def add_category(HttpRequest):
 		if form.is_valid():
 			print("Form valid")
 			form = form.save(commit=False)
-
+			form.icon = HttpRequest.FILES.get("icon")
 			form.save()
 			print("saved......")
 			category = Categories(pk=form.pk)
@@ -262,36 +264,29 @@ class update_category(UpdateView):
 		context = self.get_context_data(**kwargs)
 		context['Sub_Categories'] = Sub_Categories.objects.filter(Category=self.object.category).exclude(id__in = self.object.sub_categories.all().values("id"))
 		return self.render_to_response(context)
-
+		
+	
 	def get_success_url(self):
-		category = Categories.objects.get(pk=self.object.pk)
-		for sub_category in self.request.POST.getlist('new_sub_categories'):
-			sub_Category = Sub_Categories(Category=category.category,Sub_Category=sub_category)
-			sub_Category.save()
-			category.sub_categories.add(sub_Category)
-		print("Succesful")
+		
 		return reverse('update_category')
 	def form_invalid(self,form):
 		print("Form Invalid",form.errors)
 		return HttpResponse(form.errors)
 	def form_valid(self,form):
-		self.object = form.save(commit=False)
-		print("Form valid")
-		category = Categories.objects.get(pk=self.object.pk)
+		form = form.save(commit=False)
+		print(self.request.FILES)
+		form.icon = self.request.FILES.get("icon")
+		category = form
+		print(self.request.POST)
 		sub_categories_list = self.request.POST.getlist('sub_categories')
-		for sub_categories_id in sub_categories_list:
-			sub_category = Sub_Categories.objects.get(pk=sub_categories_id)
-			sub_category.Category = self.object.category
-			sub_category.save()
-
+		new_sub_categories = self.request.POST.getlist('new_sub_categories')
+		for sub_category in new_sub_categories:
+			sub_category = Sub_Categories.objects.create(Category=form.category,Sub_Category=sub_category)
+			sub_categories_list.append(sub_category.pk)
 		category.sub_categories.set(sub_categories_list)
-		unselected_Sub_categories= Sub_Categories.objects.filter(Category=self.object.category).exclude(id__in =Sub_Categories.objects.filter(pk__in=sub_categories_list).values("id"))
-		unselected_Sub_categories.delete()
-		print(unselected_Sub_categories)
-		self.object.save()
-
-
-
+		unselected_subcategories_list = Sub_Categories.objects.filter(categories=None)
+		print(unselected_subcategories_list)
+		unselected_subcategories_list.delete()
 		return super().form_valid(form)
 
 

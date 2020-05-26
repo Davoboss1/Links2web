@@ -241,7 +241,7 @@ font-family: 'Lato', sans-serif;
   line-height: 1;
   width: 100%;
   overflow-x:scroll;
-  background-color:#DCDEF1;
+  background-color:#000000;
 }
 .align-right {
   float: right;
@@ -251,13 +251,12 @@ font-family: 'Lato', sans-serif;
   padding: 0;
   list-style: none;
   display: block;
-  
 }
 #cssmenu ul li {
   position: relative;
   margin: 0;
   padding: 0;
-  
+
 }
 #cssmenu ul li a {
   text-decoration: none;
@@ -306,7 +305,7 @@ font-family: 'Lato', sans-serif;
   height: 0;
   
   border-top: 13px solid #000000;
-  border-botom: 13px solid transparent;
+  border-bottom: 13px solid transparent;
   border-left: 125px solid transparent;
   border-right: 125px solid transparent;
   left: 0;
@@ -426,6 +425,8 @@ font-family: 'Lato', sans-serif;
 #cssmenu ul ul > li.open::after {
   border-top-color: #666666;
 }
+
+
 
 .mh-350{
 	max-height:350px;
