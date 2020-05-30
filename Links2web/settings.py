@@ -84,6 +84,9 @@ DATABASES = {
         'HOST' : 'Links2web.mysql.pythonanywhere-services.com',
         'NAME': 'Links2web$Links2webdb',
         'PASSWORD' : 'Davo2001$',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        }, 
     },
 }
 '''
