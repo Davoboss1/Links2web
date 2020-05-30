@@ -466,7 +466,7 @@ def Categories_and_websites(request):
 		else:
 			Category = Categories.objects.all()
 		print("'Categories search'",Category)
-		serializer = categories_serializers(Category,many=True)
+		serializer = categories_serializers(Category,context={"request":request},many=True)
 		return Response(serializer.data)
 
 @api_view(['GET'])

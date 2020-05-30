@@ -37,7 +37,7 @@ class categories_serializers(serializers.ModelSerializer):
 			return None
 	class Meta:
 		model = Categories
-		fields = ('pk','List_Type','category','sub_categories',)
+		fields = ('pk','List_Type','icon','category','sub_categories',)
 	
 	
 	
