@@ -37,4 +37,5 @@ path('update_single_website/',views.update_single_website_select,name="update_si
 path('update_single_website/<pk>/<str:website>/',views.update_website.as_view(),name="update_single_website"),
 
 path('delete_website/',views.delete_websites,name="delete_website"),
+path('add_websites_external/',views.add_website_external,name="add_website_external")
 ]

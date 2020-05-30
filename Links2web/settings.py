@@ -26,7 +26,7 @@ SECRET_KEY = '&qgbbu@+ql2*f39bl8rd53$i+(01x_+wij(kh@45nk#knh$%2z'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','links2web.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost','127.0.0.1','links2web.pythonanywhere.com','192.168.43.1']
 
 
 # Application definition
@@ -78,16 +78,16 @@ WSGI_APPLICATION = 'Links2web.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-'default': {
+DATABASES = {	 
+    'default': {
         'ENGINE': 'django.db.backends.mysql',
         'HOST' : 'Links2web.mysql.pythonanywhere-services.com',
         'NAME': 'Links2web$Links2webdb',
         'PASSWORD' : 'Davo2001$',
     },
 }
-'''    
-	 'default': {
+'''
+'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },

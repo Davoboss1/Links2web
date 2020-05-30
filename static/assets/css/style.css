@@ -82,44 +82,7 @@ font-family: 'Lato', sans-serif;
 	
 }
 
-@media screen and (min-width:768px){
-	.side-nav{
- 	position:fixed;
-	margin:0;
-	padding-right:25%;
-	padding:0;
-	overflow:auto;
-	width:25%;
-	height:100%;
-	background-image:url("../img/main-bg5.jpg");
-	  background-size:cover;
-	background-repeat:no-repeat;
-	 }
-#categories{
-	margin-top:10%;
-	margin-left:25%;
-	width:75%;
-}
-#websites{
-	
-	margin-top:10%;
-	margin-left:25%;
-	width:75%;
 
-}
-
-	.push-right{
-		width:75%;
-		margin-left:25%;
-		margin-top:10%;
-		
-	}
-	.all-websites-header{
-	display:block;
-	
-}
-	
-}
 .push-right{
 	color:white;
 }
@@ -442,11 +405,6 @@ font-family: 'Lato', sans-serif;
 	background-color: #00a087;	
 }
 
-@media screen and (min-width : 480px){
-#nav-b{
-	margin-left:25%;
-}
-}
 
 .navbar { padding: 0; }
 
@@ -605,12 +563,6 @@ font-family: 'Lato', sans-serif;
 
 @media (min-width:768px) {
 	
-	.footer-distributed{
-	
-		width:75%;
-		margin-left:25%;
-		padding-left:2%;
-	}
 	.footer-image{
 	
 		height:250px;
@@ -621,9 +573,7 @@ font-family: 'Lato', sans-serif;
 	border-radius:10px;
 		
 	}
-	.footer-center{
-		
-	}
+	
 }
 
 
@@ -669,15 +619,7 @@ font-family: 'Lato', sans-serif;
 	
 }
 
-@media (min-width:768px) and (min-height:920px){
-	.footer-distributed{
-		
-	}
-	#categories{
-	height:900px;
-	overflow-y:auto;
-	}
-}
+
 .now-ui-icons.spin {
   -webkit-animation: nc-icon-spin 2s infinite linear;
   -moz-animation: nc-icon-spin 2s infinite linear;

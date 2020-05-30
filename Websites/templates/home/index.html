@@ -3,11 +3,13 @@
 
 <head>
   <meta charset="utf-8" />
-{% block title %}
+
   <title>
+  {% block title %}
     Links2web. A website to other websites.
-  </title>
   {% endblock %}
+  </title>
+  
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   {% load static %}
   <!--     Fonts and icons     -->
@@ -28,8 +30,9 @@
   <link rel="stylesheet" href="{% static './assets/css/style.css' %}">
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="./assets/demo/demo.css" rel="stylesheet" />
-  {% block style %}
+  
   <style>
+  {% block style %}
   ul#head-list li a{
   	min-width:150px; text-align:center; max-width:250px;
   }
@@ -37,18 +40,19 @@
    ul#head-list li.has-sub a{
 	min-width:150px; text-align:center; max-width:350px;
   }
-  </style>
   {% endblock %}
+  </style>
+  
 </head>
 
 <body style="background:#020525; color:white;">
 {% block nav %}
-<nav class="navbar navbar-dark bg-dark fixed-top " id="nav-b">
-	<div id='cssmenu' class="container-fluid" >
-		<ul id="head-list" style="display:flex;">
+<nav class="navbar navbar-dark bg-dark fixed-top" id="nav-">
+	<div id='cssmenu' class="d-flex bg-dark" >
+		<ul id="head-list" class="mx-auto d-flex">
 		<li ><a href="{% url 'home' %}" ><span >Home</span></a></li> 
 		<li class='active has-sub '><a style="display:flex;" onclick="s();" ><span>Search</span> </a>
-		<ul style="max-height:350px; overflow-y:auto; min-width:300px;">
+		<ul style="max-height:500px; overflow-y:auto; min-width:300px;">
 			<li >
 				<form method="get" class="input-header-list" action="#categories">
 					<input class="form-control " type="text" name="search_all_result" placeholder="Search all" style="height:40px; width:250px; margin:10px;"> <button type="submit"  class="btn btn-info" style="height:40px;margin: 10px 5px;"><span class="fas fa-search"></span></button>
@@ -70,18 +74,18 @@
     	<ul style="max-height:350px; overflow-y:auto; min-width:200px;">
     	{% for data in category %}
     		<li>
-    			<a href="{% url 'websites' data.pk data.category %}" style="background:#000000; color:#D2EBFB;"><img src="{{data.icon}}"  style="height:30px; width:30px;border-radius:5px; padding-right:30%;" > {{data.category}}</a>		
+    			<a href="{% url 'websites' data.pk data.category %}" style="background:#000000; color:#D2EBFB;"><img src="{% if data.icon %}{{data.icon.url}}{% endif %}"  style="height:30px; width:30px;border-radius:5px; padding-right:30%;" > {{data.category}}</a>		
     		</li>
         {% endfor %}
       </ul>
    </li> 
    <li class="has-sub active"><a href='#' ><span>Contact</span></a>
-   	<ul style="max-height:350px; min-width:300px; overflow-y:auto;">
+   	<ul style="max-height:350px; width:200px; overflow-y:auto;">
   	 	<li ></li>
  	  	<li class="has-sub"><a href="" style="background:#171D34; color:white; ">Contact Links2web</a>
  		  	<ul>
    				<li><a href="{% url 'contact' 'Suggest websites or categories' %}" style="background:#171D34; color:white;">Suggest websites or categories</a></li>
-	   			<li><a href="{% url 'contact' 'Reporta Issues' %}" style="background:#171D34; color:white;">Report Issues</a></li>
+	   			<li><a href="{% url 'contact' 'Report Issues' %}" style="background:#171D34; color:white;">Report Issues</a></li>
    				<li><a href="{% url 'contact' 'Send message' %}" style="background:#171D34; color:white;">Send message</a></li>
    			</ul>
    		</li>
@@ -106,29 +110,32 @@
 </nav>
 {% endblock %}
 	  {% block header %}
-	  <div class="side-nav">
+	  <div>
 	  		
 	<header class="header" style="">
 		
-		<div class="container-fluid">
+		<div class="container">
 			<div class="row">
 			
-				<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+				<div class="col-12">
 				
 		<h2 style="text-align:center; margin-top:20%;">
 	<i>
-			Links2Web
+			<u>Links2Web</u>
 	</i>
 	
 		 </h2>
 		
 		<h2 style="text-align:center;">
 			<i>
-				Links to other websites
+				We provide you free links to other websites in multiple categories.
+			</i>
+			<i>
+				Explore
 			</i>
 			</h2>
 			
-		<div id="carouselExampleControls" class="carousel slide slider" data-ride="carousel" >
+		<div id="carouselExampleControls" style="max-width:400px; max-height:400px;" class="carousel slide slider mx-auto" data-ride="carousel" >
 		
 			
 		 <div class="carousel-inner">
@@ -144,7 +151,7 @@
  	{{slide.Info|urlize}}
  	{% endautoescape %}
  </h4>
-<img class="d-block w-100" src="{{slide.Image_url}}" alt="">
+<img class="d-block w-100" src="{% if slide.Image %}{{slide.Image.url}}{% endif %}" alt="">
 	
  </div>
  {% else %}
@@ -194,7 +201,7 @@
 	  
 	  {% endblock %}
 	  {% block content %}
-	  	<div class="container-fluid" id="categories" >
+	  	<div class="container" id="categories" >
 	 
 		<h3 style="text-align:center;">Categories</h3>
 		<hr>
@@ -249,13 +256,13 @@
 	  </div>  
 	</div>	
 	  
-	
+	{% endblock %}
+	{% block footer %}
 <footer class="footer-distributed" >
 
 			<div class="footer-left">
 
-				<img src="{% static 'assets/img/Links2weblogo.png' %}" alt="" class="footer-image" style="background:white;
-	border-radius:10px; ">
+				<img src="{% static 'assets/img/Links2weblogo.png' %}" alt="" class="footer-image" style="background:white; border-radius:10px; max-width:400px; max-height:400px; ">
 				<p class="footer-links"> 
 					<p style="text-align:center;"> 
 					<a href="{% url 'home' %}">Home</a>
@@ -318,25 +325,15 @@
 			</div>
 		</footer> 
 	{% endblock %}
- 
-   
-     <!--
-  <script>
-  	alert("Width : " + window.innerWidth + "height : " + window.innerHeight);
-  	
-  </script>
-  -->
+
   <!--   Core JS Files   -->
-  <script src="{% static './assets/js/custom-js.js' %}"></script>
- 
-  
-  
+  <script src="{% static './assets/js/custom-js.js' %}"></script>    
   <script src="{% static './assets/js/core/jquery.min.js' %}" type="text/javascript"></script>
   <script src="{% static './assets/js/core/popper.min.js' %}" type="text/javascript"></script>
   <script src="{% static './assets/js/core/bootstrap.min.js' %}" type="text/javascript"></script>
 
    <script src="{% static './assets/js/menu-script.js' %}"></script>
-{% block end %}
+{% block js %}
 {% endblock %}
 </body>
 

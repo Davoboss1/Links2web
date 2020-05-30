@@ -14,16 +14,18 @@ window.onscroll = function() {
 function changeTheme(){
 var mainlist = document.getElementById("main-list");
 var button = document.getElementById("theme-button");
-	
-	if (mainlist.className=="no-space all-websites-main-list row" ){
-			mainlist.className = "no-space all-websites-main-list-dark row";
-			button.className = "theme-button-dark";
-			
-	}else if(mainlist.className == "no-space all-websites-main-list-dark row"){
-			mainlist.className = "no-space all-websites-main-list row";
-			button.className = "theme-button-light";
-			
+var cont = mainlist.parentElement.parentElement;
+
+	if (mainlist.className=="all-websites-main-list row" ){
+		mainlist.className = "all-websites-main-list-dark row";
+		button.className = "theme-button-dark";
+		cont.style.backgroundColor = "black";
+	}else if(mainlist.className == "all-websites-main-list-dark row"){
+		mainlist.className = "all-websites-main-list row";
+		button.className = "theme-button-light";
+		cont.style.backgroundColor="white";
 	}
+	
 }
 
 

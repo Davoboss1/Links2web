@@ -18,7 +18,7 @@ from Websites.serializers import json_serializers, categories_serializers,Slider
 from django.views.generic import UpdateView,DeleteView
 from django.contrib.gis.geoip2 import GeoIP2
 from geoip2.errors import AddressNotFoundError
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -81,38 +81,42 @@ def home(request):
 			slider = Slider.objects.all()
 			searched_categories = Categories.objects.filter(category__icontains=request.GET.get("search_all_result"))
 			searched_websites = Websites.objects.order_by(F('website').asc(nulls_last=True)).filter(website__icontains=request.GET.get("search_all_result"))
+			website_set = searched_websites
 			page = request.GET.get('page')
-			paginator = Paginator(searched_websites,20)
-			context['websites'] = paginator.get_page(page)
-
+			paginator = Paginator(website_set,20)	
 			if request.is_ajax():
-
-				web_html = loader.render_to_string('home/load_more_websites.html',{ 'websites' : context['websites'],'Category':Categories(List_Type='OL',icon = None,category = None,sub_categories=None ,),'urlPath':request.get_full_path(), })
-				return HttpResponse(web_html)
+				try:
+					print("page :",page)
+					context['websites'] = paginator.page(page)
+					print(context['websites'])
+					web_html = loader.render_to_string('home/load_more_websites.html',{ 'websites' : context['websites'], })
+					return HttpResponse(web_html)
+				except EmptyPage:
+					return HttpResponse("EMPTY")		
+			context['websites'] = paginator.page(1)
 			return render(request,"home/search.html",{'category':Category,'slider':slider,'result':searched_categories,'result_websites':context['websites'],'type':'all'})
 		elif request.GET.__contains__("search_categories_result"):
 			Category = Categories.objects.all()
-			slider = Slider.objects.all()
 			searched_categories = Categories.objects.filter(category__icontains=request.GET.get("search_categories_result"))
-			return render(request,"home/search.html",{'category':Category,'slider':slider,'result':searched_categories,'type':'category'})
+			return render(request,"home/search.html",{'category':Category,'result':searched_categories,'type':'category'})
 		elif request.GET.__contains__("search_website_result"):
 			Category = Categories.objects.all()
-			slider = Slider.objects.all()
 			searched_websites = Websites.objects.order_by(F('website').asc(nulls_last=True)).filter(website__icontains=request.GET.get("search_website_result"))
 
+			website_set = searched_websites
 			page = request.GET.get('page')
-			paginator = Paginator(searched_websites,20)
-			context['websites'] = paginator.get_page(page)
-
+			paginator = Paginator(website_set,20)	
 			if request.is_ajax():
-				print("request is ajax",request.path)
-				web_html = loader.render_to_string('home/load_more_websites.html',{ 'websites' : context['websites'],'Category':Categories(List_Type='OL',icon = None,category = None,sub_categories=None,),'urlPath':request.get_full_path(),})
-
-				return HttpResponse(web_html)
-
-
-
-			return render(request,"home/search.html",{'category':Category,'slider':slider,'result_websites':context['websites'],'type':'website'})
+				try:
+					print("page :",page)
+					context['websites'] = paginator.page(page)
+					print(context['websites'])
+					web_html = loader.render_to_string('home/load_more_websites.html',{ 'websites' : context['websites'] })
+					return HttpResponse(web_html)
+				except EmptyPage:
+					return HttpResponse("EMPTY")		
+			context['websites'] = paginator.page(1)
+			return render(request,"home/search.html",{'category':Category,'result_websites':context['websites'],'type':'website'})
 
 	template = "home/index.html"
 	Category = Categories.objects.all()
@@ -122,6 +126,8 @@ def home(request):
 
 def control_panel(request):
 	if request.user.is_authenticated:
+		print(request.session.items())
+		print(request.session.get("_auth_user_id"))
 		context = {}
 		return render(request,"home/control_panel.html",context)
 	else:
@@ -190,17 +196,21 @@ def all_websites(request,**kwargs):
 	
 	page = request.GET.get('page')
 	paginator = Paginator(website_set,20)
-	context['websites'] = paginator.get_page(page)
+	
 	if request.is_ajax():
-		fullpath = str(request.get_host())+str(request.path)
-		web_html = loader.render_to_string('home/load_more_websites.html',{ 'websites' : context['websites'],'Category':queryset,'url_path':fullpath, })
-		return HttpResponse(web_html)
+		try:
+			print("page :",page)
+			context['websites'] = paginator.page(page)
+			print(context['websites'])
+			web_html = loader.render_to_string('home/load_more_websites.html',{ 'websites' : context['websites'],'Category':queryset, })
+			return HttpResponse(web_html)
+		except EmptyPage:
+			return HttpResponse("EMPTY")
 
-
+	context['websites'] = paginator.page(1)
 	context['category'] = categories
-	context['slider'] = Slider.objects.all()
 	return render(request,template,context)
-@ensure_csrf_cookie
+
 def Login(request):
 	context = {}
 
@@ -275,7 +285,9 @@ class update_category(UpdateView):
 	def form_valid(self,form):
 		form = form.save(commit=False)
 		print(self.request.FILES)
-		form.icon = self.request.FILES.get("icon")
+		if self.request.FILES.get("icon"):
+			print("icon exists")
+			form.icon = self.request.FILES.get("icon")
 		category = form
 		print(self.request.POST)
 		sub_categories_list = self.request.POST.getlist('sub_categories')
@@ -619,8 +631,37 @@ def json_data(request,id):
 			return Response(status=HTTP_204_NO_CONTENT)
 	return JsonResponse(serializer.errors,status=HTTP_400_BAD_REQUEST)
 
-
-
+@csrf_exempt
+def add_website_external(request):
+	categories = Categories.objects.all()
+	if request.method == "POST":
+		category_id = request.POST.get("category_id")
+		category = Categories.objects.get(pk=category_id)
+		website_url =request.POST.get("website")
+		sub_categories = request.POST.getlist("sub_category_id")
+		print(request.POST)		
+		website = website_url
+		prefix = ["http://www.","https://www.","http://","https://","www."]
+		for pre in prefix:
+			if website.startswith(pre):
+				website = website[len(pre):]
+				break		
+		if website.endswith(".com"):
+			website = website.rstrip(".com")
+			website = website.rstrip("/")
+		
+		website = Websites.objects.create(website=website,url=website_url,category=category)
+		print(type(sub_categories))
+		if sub_categories:
+			print("Sub categories")
+			website.Tags.set(sub_categories)
+		return HttpResponse(f"{website_url} has been added successfully")
+	else:
+		data_list = []
+		for category in categories:
+			obj = {"category":category.category,"id":category.id,"sub_categories":list(category.sub_categories.values("id","Sub_Category"))}
+			data_list.append(obj)
+		return JsonResponse(data_list,safe=False)
 
 
 

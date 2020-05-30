@@ -6,7 +6,7 @@ from django.forms import ModelForm,widgets
 
 class Slider(models.Model):
 	Info = models.CharField(max_length=250)
-	Image_url = models.URLField(null=True,blank=True)
+	Image = models.ImageField(upload_to="icons",null=True,blank=True)
 	def __str__(self):
 		return self.Info
 

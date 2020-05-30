@@ -66,7 +66,7 @@
 	
 
 {% endblock %}
-{% block end %}
+{% block js %}
 <script>
 	
 	var button_id;
@@ -74,6 +74,7 @@
 	$(function() {
 $(".submit").on("click",function(){
 	 button_id = document.getElementById(this.id);
+	 button_id.textContent = "Deleting...";
 		$.ajax({ url: 'http://{{request.get_host}}{{request.path}}', 
 		type: 'POST', 
 		data:{ csrfmiddlewaretoken: '{{ csrf_token }}',
@@ -94,4 +95,6 @@ $(".submit").on("click",function(){
 </script>
 
 
+{% endblock %}
+{% block footer %}
 {% endblock %}
