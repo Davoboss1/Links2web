@@ -79,7 +79,13 @@ WSGI_APPLICATION = 'Links2web.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-'default': {
+ 'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+}
+'''
+    'default': {
         'ENGINE': 'django.db.backends.mysql',
         'HOST' : 'Links2web.mysql.pythonanywhere-services.com',
         'NAME': 'Links2web$Links2webdb',
@@ -87,12 +93,6 @@ DATABASES = {
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         }, 
-    },
-}
-'''
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     },
 '''
 '''
@@ -153,8 +153,8 @@ GEOIP_PATH = str(BASE_DIR)+"/GeoLite2-Country_20190827/"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_ROOT = str(BASE_DIR) + '/static/'
+#STATIC_ROOT = str(BASE_DIR) + '/static/'
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-#STATICFILES_DIRS = [str(BASE_DIR)+"/static/",]
+STATICFILES_DIRS = [str(BASE_DIR)+"/static/",]

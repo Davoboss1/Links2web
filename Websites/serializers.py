@@ -32,7 +32,7 @@ class categories_serializers(serializers.ModelSerializer):
 	def get_icon_url(self,obj):
 		try:
 			request = self.context['request']
-			return request.get_host()+str(obj.icon.url)
+			return "http://"+request.get_host()+str(obj.icon.url)
 		except:
 			return None
 	class Meta:

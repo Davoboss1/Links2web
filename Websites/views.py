@@ -94,11 +94,11 @@ def home(request):
 				except EmptyPage:
 					return HttpResponse("EMPTY")		
 			context['websites'] = paginator.page(1)
-			return render(request,"home/search.html",{'category':Category,'slider':slider,'result':searched_categories,'result_websites':context['websites'],'type':'all'})
+			return render(request,"home/search.html",{'category':Category,'slider':slider,'result':searched_categories,'result_websites':context['websites'],'type':'all','search_query':request.GET.get("search_all_result"),})
 		elif request.GET.__contains__("search_categories_result"):
 			Category = Categories.objects.all()
 			searched_categories = Categories.objects.filter(category__icontains=request.GET.get("search_categories_result"))
-			return render(request,"home/search.html",{'category':Category,'result':searched_categories,'type':'category'})
+			return render(request,"home/search.html",{'category':Category,'result':searched_categories,'type':'category','search_query':request.GET.get("search_categories_result"),})
 		elif request.GET.__contains__("search_website_result"):
 			Category = Categories.objects.all()
 			searched_websites = Websites.objects.order_by(F('website').asc(nulls_last=True)).filter(website__icontains=request.GET.get("search_website_result"))
@@ -116,7 +116,7 @@ def home(request):
 				except EmptyPage:
 					return HttpResponse("EMPTY")		
 			context['websites'] = paginator.page(1)
-			return render(request,"home/search.html",{'category':Category,'result_websites':context['websites'],'type':'website'})
+			return render(request,"home/search.html",{'category':Category,'result_websites':context['websites'],'type':'website','search_query':request.GET.get("search_website_result"),})
 
 	template = "home/index.html"
 	Category = Categories.objects.all()

@@ -3,6 +3,7 @@
 {% block header %}
 <div class="header" style="margin-top:50px; padding:5% 0">
 <h2 class="text-center" >Search result</h2>
+<h4 class="text-center" >Showing search result for "{{search_query}}"</h4>
 </div>
 {% endblock %}
 
@@ -51,6 +52,7 @@
 </div>
 {% endif %}
  {% if type != 'category' %}
+ <h3 style="text-align:center;">Websites</h3>
 <div class="container-fluid" style="background-color:white;">
 <div id="websites" class="container">
 	{% if result_websites.object_list.exists %}		

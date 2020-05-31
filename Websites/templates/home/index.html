@@ -54,18 +54,18 @@
 		<li class='active has-sub '><a style="display:flex;" onclick="s();" ><span>Search</span> </a>
 		<ul style="max-height:500px; overflow-y:auto; min-width:300px;">
 			<li >
-				<form method="get" class="input-header-list" action="#categories">
-					<input class="form-control " type="text" name="search_all_result" placeholder="Search all" style="height:40px; width:250px; margin:10px;"> <button type="submit"  class="btn btn-info" style="height:40px;margin: 10px 5px;"><span class="fas fa-search"></span></button>
+				<form method="get" class="input-header-list" action="{% url 'home' %}">
+					<input class="form-control " type="text" name="search_all_result" placeholder="Search all" style="height:40px; width:250px; margin:10px;"> <button type="submit"  class="btn btn-info" style="height:40px;margin: 10px 5px;" type="submit"><span class="fas fa-search"></span></button>
 				</form>
 			</li>
 			<li>
-				<form method="get" class="input-header-list" action="#categories">
-					<input class="form-control" type="text" placeholder="Search categories" name="search_categories_result" style="height:40px; width:250px; margin:10px;"> <button class="btn btn-info" style="height:40px;margin: 10px 5px;"><span class="fas fa-search" ></span></button>
+				<form method="get" class="input-header-list" action="{% url 'home' %}">
+					<input class="form-control" type="text" placeholder="Search categories" name="search_categories_result" style="height:40px; width:250px; margin:10px;"> <button class="btn btn-info" style="height:40px;margin: 10px 5px;" type="submit"><span class="fas fa-search" ></span></button>
 				</form>
 			</li>
 			<li>
-				<form method="get" class="input-header-list" action="#websites" >
-					<input class="form-control" name="search_website_result" type="text" placeholder="Search websites" style="height:40px; width:250px; margin: 10px;"> <button class="btn btn-info" style="height:40px; margin: 10px 5px;"><span class="fas fa-search"></span></button>
+				<form method="get" class="input-header-list" action="{% url 'home' %}" >
+					<input class="form-control" name="search_website_result" type="text" placeholder="Search websites" style="height:40px; width:250px; margin: 10px;"> <button class="btn btn-info" style="height:40px; margin: 10px 5px;" type="submit"><span class="fas fa-search"></span></button>
 				</form>
 			</li>
 		</ul>
@@ -74,7 +74,7 @@
     	<ul style="max-height:350px; overflow-y:auto; min-width:200px;">
     	{% for data in category %}
     		<li>
-    			<a href="{% url 'websites' data.pk data.category %}" style="background:#000000; color:#D2EBFB;"><img src="{% if data.icon %}{{data.icon.url}}{% endif %}"  style="height:30px; width:30px;border-radius:5px; padding-right:30%;" > {{data.category}}</a>		
+    			<a href="{% url 'websites' data.pk data.category %}" style="background:#000000; color:#D2EBFB; width:100%; display:flex;"><div class="w-25"><img src="{% if data.icon %}{{data.icon.url}}{% endif %}"  style="height:30px; width:30px;border-radius:5px;" ></div> <div class="w-75 my-auto">{{data.category}}</div></a>		
     		</li>
         {% endfor %}
       </ul>
@@ -112,14 +112,14 @@
 	  {% block header %}
 	  <div>
 	  		
-	<header class="header" style="">
+	<header class="header" style="margin-top:50px; padding-top:50px;">
 		
 		<div class="container">
 			<div class="row">
 			
 				<div class="col-12">
 				
-		<h2 style="text-align:center; margin-top:20%;">
+		<h2 style="text-align:center;">
 	<i>
 			<u>Links2Web</u>
 	</i>
@@ -135,33 +135,28 @@
 			</i>
 			</h2>
 			
-		<div id="carouselExampleControls" style="max-width:400px; max-height:400px;" class="carousel slide slider mx-auto" data-ride="carousel" >
+		<div id="carouselExampleControls"  class="carousel slide slider mx-auto" data-ride="carousel" >
 		
 			
 		 <div class="carousel-inner">
 		
-		 	{% for slide in slider %}
-		 	
+		 	{% for slide in slider %}	 	
 		 	{% if forloop.counter == 1 %}
- <div class="carousel-item active"> 
- 
- 
- <h4 style="font-family:monospace; text-align:center;">
- {% autoescape off %}
- 	{{slide.Info|urlize}}
- 	{% endautoescape %}
- </h4>
-<img class="d-block w-100" src="{% if slide.Image %}{{slide.Image.url}}{% endif %}" alt="">
-	
- </div>
- {% else %}
+			<div class="carousel-item active"> 
+ 			<h4 style="font-family:monospace; text-align:center; margin-left:5%; margin-right:5%;">
+ 			{% autoescape off %}
+ 			{{slide.Info|urlize}}
+ 			{% endautoescape %}
+			</h4>
+			<img class="d-block w-100 mx-auto" src="{% if slide.Image %}{{slide.Image.url}}{% endif %}" alt="" style="max-width:400px; max-height:400px;">
+		</div>
+ 		{% else %}
  <div class="carousel-item ">
- 	<h4 style="font-family:monospace; text-align:center;">
+ 	<h4 style="font-family:monospace; text-align:center; margin-left:5%; margin-right:5%;">
  	{% autoescape off %}
  	{{slide.Info|urlize}}
- 	{% endautoescape %}</h4>
- 	
- <img  class="d-block w-100" src="{{slide.Image_url}}" alt="">
+ 	{% endautoescape %}</h4> 	
+ <img class="d-block w-100 mx-auto" src="{% if slide.Image %}{{slide.Image.url}}{% endif %}" alt="" style="max-width:400px; max-height:400px;">
  		
  	</div>
  {% endif %}

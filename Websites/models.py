@@ -1,15 +1,33 @@
 from django.db import models
 from django.db.models import  F
 from django.forms import ModelForm,widgets
+import sys
+from django.db import models
+from PIL import Image
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+#Image compressor
+def compressImage(image_field,width,height):
+        imageTemproary = Image.open(image_field)
+        outputIoStream = BytesIO()
+        imageTemproaryResized = imageTemproary.resize( (width,height) ) 
+        imageTemproary.save(outputIoStream,format="JPEG")
+        outputIoStream.seek(0)
+        uploadedImage = InMemoryUploadedFile(outputIoStream,'ImageField', "%s.jpg" % image_field.name.split('.')[0], 'image/png', sys.getsizeof(outputIoStream), None)
+        return uploadedImage
 
 # Create your models here.
 
 class Slider(models.Model):
 	Info = models.CharField(max_length=250)
-	Image = models.ImageField(upload_to="icons",null=True,blank=True)
+	Image = models.ImageField(upload_to="slider",null=True,blank=True)
 	def __str__(self):
 		return self.Info
-
+	def save(self, *args, **kwargs):
+		if not self.pk:
+			self.Image = compressImage(self.Image,500,400)
+		super(Slider, self).save(*args, **kwargs)
 
 class Sub_Categories(models.Model):
 	Category = models.CharField(max_length=100)
@@ -30,6 +48,10 @@ class Categories(models.Model):
 	sub_categories = models.ManyToManyField(Sub_Categories,related_name="categories")
 	def __str__(self):
 		return self.category
+	def save(self, *args, **kwargs):
+		if not self.pk:
+			self.icon = compressImage(self.icon,50,50)
+		super(Categories, self).save(*args, **kwargs)
 
 	class Meta:
 		ordering = ['category']
