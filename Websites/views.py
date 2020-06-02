@@ -645,10 +645,11 @@ def add_website_external(request):
 		for pre in prefix:
 			if website.startswith(pre):
 				website = website[len(pre):]
-				break		
+				break
+		website = website.rstrip("/")
 		if website.endswith(".com"):
 			website = website.rstrip(".com")
-			website = website.rstrip("/")
+			
 		
 		website = Websites.objects.create(website=website,url=website_url,category=category)
 		print(type(sub_categories))
