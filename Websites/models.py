@@ -9,6 +9,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 
 #Image compressor
 def compressImage(image_field,width,height):
+    try:
         imageTemproary = Image.open(image_field)
         outputIoStream = BytesIO()
         imageTemproaryResized = imageTemproary.resize( (width,height) ) 
@@ -16,6 +17,8 @@ def compressImage(image_field,width,height):
         outputIoStream.seek(0)
         uploadedImage = InMemoryUploadedFile(outputIoStream,'ImageField', "%s.jpg" % image_field.name.split('.')[0], 'image/png', sys.getsizeof(outputIoStream), None)
         return uploadedImage
+    except:
+        return image_field
 
 # Create your models here.
 
@@ -23,11 +26,12 @@ class Slider(models.Model):
 	Info = models.CharField(max_length=250)
 	Image = models.ImageField(upload_to="slider",null=True,blank=True)
 	def __str__(self):
-		return self.Info
+            return self.Info
 	def save(self, *args, **kwargs):
-		if not self.pk:
-			self.Image = compressImage(self.Image,500,400)
-		super(Slider, self).save(*args, **kwargs)
+            if not self.pk:
+                if self.Image:
+                    self.Image = compressImage(self.Image,500,400)
+            super(Slider, self).save(*args, **kwargs)
 
 class Sub_Categories(models.Model):
 	Category = models.CharField(max_length=100)
@@ -49,9 +53,10 @@ class Categories(models.Model):
 	def __str__(self):
 		return self.category
 	def save(self, *args, **kwargs):
-		if not self.pk:
-			self.icon = compressImage(self.icon,50,50)
-		super(Categories, self).save(*args, **kwargs)
+            if not self.pk:
+                if self.icon:
+	                self.icon = compressImage(self.icon,50,50)
+            super(Categories, self).save(*args, **kwargs)
 
 	class Meta:
 		ordering = ['category']
