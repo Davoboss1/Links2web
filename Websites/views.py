@@ -59,8 +59,6 @@ def visitor_ip_address(request):
 def visitors_location(ip):
 	geoip = GeoIP2()
 	user_country = geoip.country(ip)
-	if user_country["country_code"] is None:
-		user_country["country_code"] = "OT"
 	try:
 		country = Countries.objects.get(Country_code=user_country['country_code'],Country_name=user_country['country_name'])
 	except Countries.DoesNotExist:
@@ -175,7 +173,7 @@ def all_websites(request,**kwargs):
 
 	try:
 		country = visitors_location(visitor_ip_address(request))
-	except AddressNotFoundError:
+	except:
 		country = None
 	context['Category_name'] = queryset.category
 	website_obj = context['websites'].order_by(F('Number').asc(nulls_last=True),F('website').asc(nulls_last=True))
