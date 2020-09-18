@@ -75,7 +75,7 @@
 	   button_id.disabled = true;
 	   button_id.textContent = "Deleting...";
 		 $.ajax({
-		   url: 'http://{{request.get_host}}{{request.path}}', 
+		   url: '{% url 'delete_website' %}', 
 		   type: 'POST',
 		   timeout: 10000,
 		   data:{ csrfmiddlewaretoken: '{{ csrf_token }}',
