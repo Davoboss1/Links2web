@@ -68,27 +68,28 @@
 {% endblock %}
 {% block js %}
 <script>
-	
 	var button_id;
-
 	$(function() {
-$(".submit").on("click",function(){
-	 button_id = document.getElementById(this.id);
-	 button_id.textContent = "Deleting...";
-		$.ajax({ url: 'http://{{request.get_host}}{{request.path}}', 
-		type: 'POST', 
-		data:{ csrfmiddlewaretoken: '{{ csrf_token }}',
+    $(".submit").on("click",function(){
+	   button_id = document.getElementById(this.id);
+	   button_id.disabled = true;
+	   button_id.textContent = "Deleting...";
+		 $.ajax({
+		   url: 'http://{{request.get_host}}{{request.path}}', 
+		   type: 'POST',
+		   timeout: 10000,
+		   data:{ csrfmiddlewaretoken: '{{ csrf_token }}',
 		pk: this.id },
-		// This is the default though, you don't actually need to always mention it 
 		success: function(data) { 
-		
-		button_id.className="btn btn-success";
-		button_id.innerHTML ="Deleted";
-		
+		  button_id.className="btn btn-success";
+		  button_id.innerHTML ="Deleted";
 		}, 
-		failure: function(data) { 
-		alert('Failed to delete');
-		 } }); 
+		error: function(data) { 
+		  button_id.disabled = false;
+		  button_id.textContent = "Delete failed.";
+		 }
+		   
+		 }); 
 	
 });
  });
