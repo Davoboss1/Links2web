@@ -345,7 +345,16 @@ def update_websites(request):
 			return JsonResponse(data)
 		elif "fetch_website_text" in request.GET:
 			text = request.GET.get("fetch_website_text")
-			website = Websites.objects.filter(website__icontains=text)
+			search_type = request.GET.get("type")
+			if search_type == 'website':
+				website = Websites.objects.filter(website__icontains=text)
+			elif search_type == 'url':
+				website = Websites.objects.filter(url__icontains=text)
+			elif search_type == 'category':
+				website = Websites.objects.filter(category__category__icontains=text)
+			elif search_type == 'sub-category':
+				website = Websites.objects.filter(Tags__Sub_Category__icontains=text)
+
 			paginator = Paginator(website,20)
 			try:
 				if "page_no" in request.GET:

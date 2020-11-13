@@ -18,8 +18,15 @@
     <div class="jumbotron shadow rounded s-center " id="s-head">
   		<h3>Links update website page</h3>
 	  </div>
+      <h4>Type</h4>
+ 	  <select id="searchType" class="form-control" >
+          <option>website</option> 
+          <option>url</option> 
+          <option>category</option> 
+          <option>sub-category</option> 
+ 	  </select>
 	  <h4>Search website</h4>
-	  <input id="searchWebsite" class="form-control" type="text" placeholder="Enter website" >
+	  <input id="searchWebsite" class="form-control" type="text" placeholder="Enter text" >
 
 	  <table class="table table-bordered table-responsive-sm text-light my-3">
 		<thead>
@@ -156,7 +163,7 @@
 		$("#loadMoreBtn").css("display","block");
 		$("#loadMoreBtn").attr("data-page-no",2);
 
-		$.get("{% url 'update_website' %}",{fetch_website_text:text},function(data) {
+		$.get("{% url 'update_website' %}",{fetch_website_text:text,"type":$("#searchType").val()},function(data) {
 			for(var i = 0; i < data.length; i++){
 				var obj = data[i];
 				$("#table-body").append('<tr><th>' + (i+1) + '</th><td>' + obj.website + '</td><td>' + obj.url + '</td><td><button class="btn btn-light mx-auto" data-toggle="modal" data-target="#update_websiteModal" onclick="getWebsiteInfo(this,' + obj.id + ')" ><span class="fa fa-edit"></span></button></td></tr>');		
@@ -180,7 +187,7 @@
 		var page_no = btn.attr("data-page-no");
 
 		//Ajax request
-		$.get("{% url 'update_website' %}",{fetch_website_text:text,page_no:page_no},function(data) {
+		$.get("{% url 'update_website' %}",{fetch_website_text:text,"type":$("#searchType").val(),page_no:page_no},function(data) {
 			//On success
 			//Server returns "EMPTY" if no data to fetch
 			//So hide load more button if server returns "EMPTY"
@@ -197,7 +204,7 @@
 			//Append data to table body
 			for(var i = 0; i < data.length; i++){
 				var obj = data[i];
-				$("#table-body").append('<tr><th>' + ((page_no*10) + (i+1)) + '</th><td>' + obj.website + '</td><td>' + obj.url + '</td><td><button class="btn btn-light mx-auto" data-toggle="modal" data-target="#update_websiteModal" onclick="getWebsiteInfo(this,' + obj.id + ')"><span class="fa fa-edit"></span></button></td></tr>');		
+				$("#table-body").append('<tr><th>' + (((page_no-1)*20) + (i+1)) + '</th><td>' + obj.website + '</td><td>' + obj.url + '</td><td><button class="btn btn-light mx-auto" data-toggle="modal" data-target="#update_websiteModal" onclick="getWebsiteInfo(this,' + obj.id + ')"><span class="fa fa-edit"></span></button></td></tr>');		
 			}
 
 			//Apply some effect to button
