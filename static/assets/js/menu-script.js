@@ -2,7 +2,7 @@
 $( document ).ready(function() {
 	
 	$("#cssmenu li.has-sub>a").attr("style","display:flex; padding-left:0; text-indent:20px;");
-	$("#cssmenu li.has-sub>a").append("<span class='now-ui-icons arrows-1_minimal-down' style='margin-left:auto; '></span>");
+	$("#cssmenu li.has-sub>a").append("<span class='fa fa-angle-down' style='margin-left:auto; '></span>");
 	
 $('#cssmenu li.has-sub>a').on('click', function(){
 	

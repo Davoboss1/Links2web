@@ -12,7 +12,7 @@
 <div class="container" >
 <h2 > {{name}} </h2>
 
-<select class="form-control" onChange="window.document.location.href=this.options[this.selectedIndex].value;" >
+<select class="form-control" style="max-width: 500px;" onChange="window.document.location.href=this.options[this.selectedIndex].value;" >
  	  
  	   <option> -------------</option> 
  	      {% for Category in category %}
@@ -21,11 +21,6 @@
  	  
  	 </select>
  	 
- 	 {% if type == "UW" %}
- 	 <div class="mt-3">
- 	  	 <a href="{% url 'update_single_website_select' %}" style=" color:white; text-decoration:underline;">Click to update single websites </a>
- 	  	 </div>
- 	  	 {% endif %}
  	 </div>
 {% endblock %}
 {% block footer %}

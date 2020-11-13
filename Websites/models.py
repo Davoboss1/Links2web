@@ -24,14 +24,8 @@ def compressImage(image_field,width,height):
 
 class Slider(models.Model):
 	Info = models.CharField(max_length=250)
-	Image = models.ImageField(upload_to="slider",null=True,blank=True)
 	def __str__(self):
             return self.Info
-	def save(self, *args, **kwargs):
-            if not self.pk:
-                if self.Image:
-                    self.Image = compressImage(self.Image,500,400)
-            super(Slider, self).save(*args, **kwargs)
 
 class Sub_Categories(models.Model):
 	Category = models.CharField(max_length=100)
@@ -77,10 +71,10 @@ class Countries(models.Model):
 class Websites(models.Model):
 	Countries = models.ManyToManyField(Countries,blank=True)
 	Number = models.IntegerField(null=True,blank=True)
-	category = models.ForeignKey(Categories,related_name="websites",default=1,on_delete=models.CASCADE)
+	category = models.ForeignKey(Categories,related_name="websites",on_delete=models.CASCADE)
 	Tags = models.ManyToManyField(Sub_Categories,related_name="Tags",blank=True)
-	url = models.URLField(default="http://")
-	website =models.CharField(max_length=250,default="None")
+	url = models.URLField()
+	website =models.CharField(max_length=250)
 	def __str__(self):
 		if self.website != None:
 			return str(self.category) +" " + str(self.Number) + ". " + self.website
@@ -94,5 +88,5 @@ class add_Websites(ModelForm):
 	class Meta:
 		model = Websites
 		fields = ('__all__')
-		widgets = {'category':widgets.Select(attrs={'class':'form-control'}),'Countries':widgets.SelectMultiple(attrs={'class':'form-control w-75','id':'countriesSelect'}),}
+		widgets = {'category':widgets.Select(attrs={'class':'form-control'}),'Countries':widgets.SelectMultiple(attrs={'class':'form-control','id':'countriesSelect'}),}
 

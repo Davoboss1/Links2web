@@ -31,7 +31,7 @@ Links2web , {{Category_name}} websites.
       	</div>
       </div>
    </div>
-      <div style="display:flex; margin-top:10%;">
+      <div style="display:flex;">
       	<button id="theme-button" class="theme-button-light " onclick="changeTheme()">Change Theme</button>
       	
       	</div>
@@ -42,7 +42,7 @@ Links2web , {{Category_name}} websites.
 $(function() {
 	$("#loadmore-btn").on("click",function(){
 		var btn = $(this);
-		btn.html('<span>Loading more websites...<i class="now-ui-icons loader_refresh spin"</i></span>');
+		btn.html('<span>Loading more websites...<i class="fa fa-refresh fa-spin"</i></span>');
 		var div = $('#main-list');
 		var page_no = btn.attr("data-page-no");
 		$.ajax({ url: '{{request.path}}',

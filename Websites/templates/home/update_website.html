@@ -1,145 +1,250 @@
 {% extends "home/index.html" %}
 {% block title %}
-<title>
-    Links add page
-  </title>
+    Links update website page
 {% endblock %}
 
 {% block nav %}
-<h2 style="color:#131D06;">
+<h2 class="text-center">
 	<a href="{% url 'home' %}">Go to Homepage</a>
 </h2>
-<h3 style="color:#131D06;">
+<h3  class="text-center">
 	<a href="{% url 'control_panel' %}">Go to Control_panel</a>
 </h3>
 {% endblock %}
 {% block header %}
 {% endblock %}
 {% block content %}
-<div class="body2">
-      <div class="container-fluid body2"  >
-      	<div class="jumbotron shadow rounded s-center " id="s-head">
-      		<h3>Links add Page</h3>
-      	</div>
-      	
-      		<h3 class="s-web-head">Update all {{object.category}} websites</h3>	
- 	
-      	
-      	<form  method="post" >
-      	{% csrf_token %}
-      
-    <select class="form-control" id="category-select" name="category" >
-    	<option value="{{object.pk}}">{{object.category}}</option>
-    	{% for object in categories %}
-    		<option value="{{object.pk}}" >{{object.category}}</option>
-    	{% endfor %}
-    	</select>
-<div class="row" id="tag-container" style="background:#F2E9E0;">
-	
-	
-</div>
-    	
-    <div class="category-form row">
-    	
-    {% for form in queryset %}
-<input value="{{form.pk}}" name="pk" style="display:none" readonly>
- <div class="col-md-6 col-lg-4 " style="background-color:#7EAADA; margin:10% 0;" ><h5 style="text-align:center;">Enter number for numbered websites</h5> <input class="form-control w-25 mx-auto" type="number" name="Number" placeholder="optional" value="{{form.Number}}"> <h5 style="text-align:center;">Enter website name</h5> <input name="website" class="form-control mb-3 w-100" type="text" placeholder="Enter website name" value="{{form.website}}"  required > <h5 style="text-align:center;">Enter website url </h5> <input name="url" class="form-control mb-3 w-100 " type="text" placeholder="Enter website url" value="{{form.url}}" required >
- <h5 style="text-align:center;">
-Select Sub Categories
-</h5>
+<div class="container-fluid" style="max-width: 500px; margin-bottom: 10%;" >
+    <div class="jumbotron shadow rounded s-center " id="s-head">
+  		<h3>Links update website page</h3>
+	  </div>
+	  <h4>Search website</h4>
+	  <input id="searchWebsite" class="form-control" type="text" placeholder="Enter website" >
 
-<select class="form-control" name="Tags_{{form.pk}}" multiple>
-{% for data in object.sub_categories.all %}
-{% if data in form.Tags.all %}
-<option value="{{data.pk}}" selected>
-{{data}}
-</option>
-{% else %}
-<option value="{{data.pk}}">
-{{data}}
-</option>
-{% endif %}
-{% endfor %}
-</select>
-<h5 style="text-align:center;">
-Select Countries
-</h5>
-<select class="form-control" name="Countries_{{form.pk}}" multiple>
-{% for data in Countries %}
-{% if data in form.Countries.all %}
-<option value="{{data.pk}}" selected>
-{{data}}
-</option>
-{% else %}
-<option value="{{data.pk}}">
-{{data}}
-</option>
-{% endif %}
-{% endfor %}
-</select>
- </div> <hr>
-    
-        {% endfor %}
-    <div style="width:100%; display:flex;">
-    	{% if queryset.has_previous %}
-    	<a href="?p={{queryset.previous_page_number}}" style="float:left; margin:0 0 5% 2%; color:#FFFFFF; border:1px solid#33A8C8; padding:5px;">Previous page</a>
-    	{% endif %}
-    		
-<select class="form-control w-25 mx-auto" onChange="window.document.location.href=this.options[this.selectedIndex].value;" style="padding:0; margin:0;" >
+	  <table class="table table-bordered table-responsive-sm text-light my-3">
+		<thead>
+		  <tr>
+			<th>#</th>
+			<th>Website</th>
+			<th>Url</th>
+			<th>Edit</th>
+		  </tr>
+		</thead>
+		<tbody id="table-body">
+		  
+		</tbody>
+	  </table>
+	  <h5 class="text-center" id="table-status"></h5>
+	  <div class="d-flex">
+		<button id="loadMoreBtn" class="btn btn-light mx-auto" data-page-no="2">Load more</button>
+	  </div>
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="update_websiteModal" tabindex="-1" role="dialog"  aria-labelledby="modalTitle" aria-hidden="true" >
+	<div class="modal-dialog modal-dialog-centered" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title text-dark" id="modalTitle" >Update website</h5>
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body text-dark" id="updateWebsiteModalBody">
+			<h5 class="text-center text-info" id="modalStatus"></h5>
+		  
+      	<form id="web-form"  method="post" >
+      	{% csrf_token %}
+      	
+      <h5>Select Category</h5>
+	  <h6>Currently: <span id="currentCategory"></span></h6>
+      		  <select class="form-control" id="" name="category" value="this.options[this.selectedIndex].value" onchange="show(this.options[this.selectedIndex].getAttribute('data-tags'),this.options[this.selectedIndex].getAttribute('data-tags-id'))" required>
  	  
- 	   <option> -------------</option> 
- 	      {% for page in page_range %}
- 	   <option value="?p={{page}}">{{page}} </option> 
+ 	   <option value="" selected disabled>Select Category</option> 
+ 	      {% for category in Category %}
+ 	   <option data-tags="[{% for i in category.sub_categories.all %}'{{i.Sub_Category}}',{% endfor %}]" data-tags-id="[{% for i in category.sub_categories.all %}{{i.pk}},{% endfor %}]" value="{{category.pk}}"> {{category}}</option> 
  	    {% endfor %}
  	  
  	 </select>
-    	{% if queryset.has_next %}
-    	<a href="?p={{queryset.next_page_number}}" style="float:right; margin: 0 2% 5% 0; color:#FFFFFF; border:1px solid #478E5B; padding:5px; ">Next page</a>
-    	{% endif %}
-    </div>
-    
-    </div>
+ 	   
+      	<div class="form-group mt-3">
+      			
+      	<h5>Select Tags or subcategories</h5>
+		<h6>Currently: </h6>
+		<ul id="subCategoryList">
+		</ul>
+		<label for="sub-category-checkbox">Use current</label>
+		<input id="sub-category-checkbox" name="sub-category-default" type="checkbox" checked>
+ 	
+ 	     <select multiple class="form-control" id="tags" name="Tags" style="visibility:hidden" >
+ 	 </select>
+ 	 
+ 
+ 	  </div>
+ 	  <h5>Countries</h5>
+		<h6>Currently: </h6>
+		<ul id="countriesList">
+		</ul>
+		<label for="countries-checkbox">Use current</label>
+		<input id="countries-checkbox" name="countries-default" type="checkbox" checked>
+ 	  <div>
+		<button type="button" class="btn btn-sm btn-primary mx-auto mb-2" onclick="markAllSelect('countriesSelect');"  >Mark all</button>
+ 	     <select multiple class="form-control"  name="Countries" id="countriesSelect" >
+			 {% for country in Countries %}
+				 <option value="{{country.pk}}">{{country.Country_name}}</option>
+			 {% endfor %}
+ 	 </select>
 
-    <div class="w-50" style="margin:0 auto 10% auto;"> <button class="s-submit w-100" type="submit" id="submit">Submit websites</button> </div>
+ 	  	</div>
+      	<div class="my-3" id="main_form">
+				<h6 style="text-align:center;">Enter number for numbered websites</h6>
+                <input type="hidden" name="website-pk" id="website-pk" value="">
+				<input class="form-control w-25 mx-auto" type="number" name="Number" placeholder="optional" id="numberInput" >
+				<h6 style="text-align:center;">Enter website name</h6><input name="website" id="websiteInput" class="form-control mb-3" type="text" placeholder="Enter website name" required >
+				<h6 style="text-align:center;">Enter website url </h6><input name="url" class="form-control mb-3" type="text" id="urlInput" placeholder="Enter website url" value="" required >
+			<div id="status"></div>
+		</div>
       	</form>
-      	
-      </div>
-      </div>
-      <!--
-    <script>
-   var data_select = document.getElementById("category-select");
-   data = data_select.options[data_select.selectedIndex].getAttribute('data-tags');
-   
-   id = data_select.options[data_select.selectedIndex].getAttribute('data-tags-id');
-    document.getElementById("tags").style.visibility = "visible";
-document.getElementById("tags").innerHTML = null;
-eval("var tags = " + data);
-eval("var tags_id = "+id);
 
-
-for (i in tags){
-
-document.getElementById("tags").innerHTML += "<option value='"+ tags_id[i]+"' selected>"+tags[i]+"</option>";
-
-}
-
-function show(data,id){
-
-document.getElementById("tags").style.visibility = "visible";
-document.getElementById("tags").innerHTML = null;
-eval("var tags = " + data);
-eval("var tags_id = "+id);
-for (i in tags){
-
-document.getElementById("tags").innerHTML += "<option value='"+ tags_id[i]+"'>"+tags[i]+"</option>";
-
-}
-
-}
-	
-    </script>
-    -->
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		  <button type="button" class="btn btn-primary"id="update-website-btn">Update</button>
+		</div>
+	  </div>
+	</div>
+  </div>
 {% endblock %}
 
 {% block footer %}
+{% endblock %}
+{% block js %}
+<script>
+	function show(data,id){
+
+	document.getElementById("tags").style.visibility = "visible";
+	document.getElementById("tags").innerHTML = null;
+	eval("var tags = " + data);
+	eval("var tags_id = "+id);
+	for (i in tags){
+
+	document.getElementById("tags").innerHTML += "<option value='"+ tags_id[i]+"'>"+tags[i]+"</option>";
+
+	}
+
+	}
+
+
+	function markAllSelect(id){
+		var select = document.getElementById(id);
+		for(var i=0;i<select.options.length;i++){
+			select.options[i].selected=true;
+		}
+	}
+
+
+	$("#searchWebsite").keyup(function (e) {
+		var text = $(this).val();
+		if(text.length<1){
+			return;
+		}
+		$("#table-body").html("");
+		$("#table-status").text("Fetching websites...");
+		$("#loadMoreBtn").css("display","block");
+		$("#loadMoreBtn").attr("data-page-no",2);
+
+		$.get("{% url 'update_website' %}",{fetch_website_text:text},function(data) {
+			for(var i = 0; i < data.length; i++){
+				var obj = data[i];
+				$("#table-body").append('<tr><th>' + (i+1) + '</th><td>' + obj.website + '</td><td>' + obj.url + '</td><td><button class="btn btn-light mx-auto" data-toggle="modal" data-target="#update_websiteModal" onclick="getWebsiteInfo(this,' + obj.id + ')" ><span class="fa fa-edit"></span></button></td></tr>');		
+			}
+			$("#table-status").text("");
+		});
+	});
+
+	//Load more button event listener
+	$("#loadMoreBtn").click(function (e) {
+		//Get input text
+		var text = $("#searchWebsite").val();
+		if(text.length<1){
+			return;
+		}
+		var btn = $(this);
+		btn.text("Loading...");
+		//Disable the button  
+		btn.attr("disabled",true);
+		//Get page number from button custom attribute
+		var page_no = btn.attr("data-page-no");
+
+		//Ajax request
+		$.get("{% url 'update_website' %}",{fetch_website_text:text,page_no:page_no},function(data) {
+			//On success
+			//Server returns "EMPTY" if no data to fetch
+			//So hide load more button if server returns "EMPTY"
+			if(data==="EMPTY"){
+				btn.css("display","none");
+				btn.attr("disabled",false);
+				btn.text("Load more");
+				return;
+			}
+
+			//Convert page_no to integer
+			page_no = parseInt(page_no);
+
+			//Append data to table body
+			for(var i = 0; i < data.length; i++){
+				var obj = data[i];
+				$("#table-body").append('<tr><th>' + ((page_no*10) + (i+1)) + '</th><td>' + obj.website + '</td><td>' + obj.url + '</td><td><button class="btn btn-light mx-auto" data-toggle="modal" data-target="#update_websiteModal" onclick="getWebsiteInfo(this,' + obj.id + ')"><span class="fa fa-edit"></span></button></td></tr>');		
+			}
+
+			//Apply some effect to button
+			btn.attr("disabled",false);
+			btn.text("Load more");  
+			btn.attr("data-page-no",page_no+1);
+		});
+	});
+
+function getWebsiteInfo(btn,id){
+	$("#modalStatus").text("Fetching website info....");
+	$.get("{% url 'update_website' %}",{get_website_info:id},function(data) {
+		$("#modalStatus").text("");
+		$("#web-form").trigger("reset");
+		var list = $("#subCategoryList");
+		list.html("");
+		for(var i = 0;i<data.tags.length;i++){
+			list.append("<li>" + data.tags[i] + "</li>");
+		}
+		list = $("#countriesList");
+		list.html("");
+		for(var i = 0;i<data.countries.length;i++){
+			list.append("<li>" + data.countries[i] + "</li>");
+		}
+
+		$("#currentCategory").text(data.category);
+		$("#numberInput").val(data.number);
+		$("#websiteInput").val($(btn).parent().prev().prev().first().text());
+		$("#urlInput").val($(btn).parent().prev().first().text());
+        $("#website-pk").val(id);
+	});
+}
+
+$("#update-website-btn").click(function(){
+	var btn = $(this);
+	btn.attr("disabled",true);
+	btn.text("updating...");
+	$.post("{% url 'update_website' %}",$("#web-form").serialize(),function(){
+
+	btn.attr("disabled",false);
+	btn.text("Updated.");
+    }).fail(function(res){
+	btn.attr("disabled",false);
+	btn.text("Failed, Retry.");
+
+    });
+});
+	
+</script>
 {% endblock %}

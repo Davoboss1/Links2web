@@ -9,7 +9,6 @@ route = routers.DefaultRouter()
 urlpatterns = [
 path('',views.home,name='home'),
 path("control_panel/",views.control_panel,name='control_panel'),
-path('',include(route.urls)), path('',include('rest_framework.urls',namespace="rest_framework")),
 path('category/', views.Categories_and_websites),
 path('category/<int:id>/',views.categories),
 path('wd/',views.websites_data),
@@ -18,8 +17,8 @@ path('wd/<int:id>/',views.websites_data),
 path('wd/<int:id>/<str:subCategory>/',views.websites_data),
 path('wv/',views.jsondata),
 path("wv/<id>/",views.json_data),
-path("Login/",views.Login,name="Login"),
-path("Logout/",views.Logout,name="Logout"),
+path("links2web_login/",views.Login,name="Login"),
+path("links2web_logout/",views.Logout,name="Logout"),
 path("contact/",views.contact,name="contact"),
 path("contact/<str:type>/",views.contact,name="contact"),
 path("websites/<int:pk>/<str:name>/",views.all_websites,name='websites'),
@@ -31,11 +30,7 @@ path('update_category/<pk>/',views.update_category.as_view(),name="update_catego
 path('update_category/',views.update_category_select,name="update_category"),
 path('delete_category/<pk>/',views.delete_category.as_view(),name="delete_category"),
 path('delete_category/',views.delete_category_select,name="delete_category_select"),
-path('update_website/<pk>/',views.update_websites,name="update_website"),
-path('update_website/',views.update_websites_select,name="update_website"),
-path('update_single_website/',views.update_single_website_select,name="update_single_website_select"),
-path('update_single_website/<pk>/<str:website>/',views.update_website.as_view(),name="update_single_website"),
-
+path('update_website/',views.update_websites,name="update_website"),
 path('delete_website/',views.delete_websites,name="delete_website"),
 path('add_websites_external/',views.add_website_external,name="add_website_external")
 ]

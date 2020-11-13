@@ -9,32 +9,32 @@
 {% endblock %}{% block header %}
 {% endblock %}
 {% block content %}
-<div class="container-fluid body2">
+<div class="container-fluid">
 	<h2>Category Page </h2>
 	
 	<form method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 	<div class="category-form" >
 	
-	<h3 style="font-family:monospace; color:#2A0125;">
+	<h3>
 			{{form.List_Type.label}}
 	</h3>
 
 	{{form.List_Type}}
 	
-		<h3 style="font-family:monospace; color:#2A0125;">
+		<h3>
 			{{form.category.label}}
 	</h3>
 
 	{{form.category}}
 	
-		<h3 style="font-family:monospace; color:#2A0125;">
+		<h3>
 			{{form.icon.label}}
 	</h3>
-
-	{{form.icon}}
+	<div class="form-icon">{{form.icon}}</div>
 	
-		<h3 style="font-family:monospace; color:#2A0125;">
+	
+		<h3>
 			Sub Categories
 	</h3>
 
@@ -50,12 +50,12 @@
 <select>
 
 
-	<h3 style="font-family:monospace; color:#2A0125;">
+	<h3>
 			Enter more tags
 	</h3>
-<div class="input-group mb-3 w-50"> <input id="tag-number" type="number" class="form-control" placeholder="Enter No" aria-label="Number" aria-describedby="button-addon2"> <div class="input-group-append" > <button class="btn btn-outline-secondary" type="button" onclick="tag_click(document.getElementById('tag-number').value)">Button</button> </div> </div>
+<div class="input-group mb-3 w-50"> <input id="tag-number" type="number" class="form-control" placeholder="Enter No" aria-label="Number" aria-describedby="button-addon2"> <div class="input-group-append" > <button class="btn btn-outline-light" type="button" onclick="tag_click(document.getElementById('tag-number').value)">Create</button> </div> </div>
 
-<div class="row" id="tag-container" style="background:#F2E9E0;">
+<div class="row" id="tag-container" >
 	
 	
 </div>

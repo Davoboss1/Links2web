@@ -9,19 +9,22 @@
 {% endblock %}{% block header %}
 {% endblock %}
 {% block content %}
-<div class="container-fluid body2">
+<div class="container-fluid">
 	<h2>Category Page </h2>
 	
 	<form method="post">
 		{% csrf_token %}
 	<div class="category-form" >
-		<h3 style="font-family:monospace; color:#2A0125;">
+		<h3>
 			Are you sure, You want to delete {{object}}
 	</h3>
 
-	<button class="btn btn-info" type="submit">
-		Submit
+	<button class="btn btn-danger" type="submit">
+		Yes
 	</button>
+	<a href="{% url 'delete_category_select' %}" class="btn btn-success" >
+		No
+	</a>
 	</div>
 	</form>
 	

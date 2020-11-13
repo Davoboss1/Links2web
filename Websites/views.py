@@ -1,3 +1,4 @@
+from itertools import chain
 from django.shortcuts import render,redirect
 from django.core.mail import send_mail,BadHeaderError
 from django.db.models import F
@@ -6,7 +7,7 @@ from django.core.paginator import Paginator, EmptyPage,PageNotAnInteger,Page
 from django.contrib.auth import authenticate,login,logout
 from django.urls import reverse,reverse_lazy
 from django.template import loader
-from django.http import HttpResponse,JsonResponse,HttpRequest
+from django.http import HttpResponse,JsonResponse,HttpRequest,HttpResponseServerError
 from django.http.response import Http404
 from .models import Websites,Slider, Categories,add_Websites, add_Categories,Countries,Sub_Categories
 from rest_framework import viewsets
@@ -124,32 +125,30 @@ def home(request):
 
 def control_panel(request):
 	if request.user.is_authenticated:
-		print(request.session.items())
-		print(request.session.get("_auth_user_id"))
 		context = {}
 		return render(request,"home/control_panel.html",context)
 	else:
 		raise Http404
 
 def contact(request,type):
-	print(request.POST)
+	#Delete email sent session variable
+	if "email_sent" in request.session:
+		del request.session["email_sent"]
+
 	if request.method == "POST":
-		print("Post")
 		name = request.POST.get('name','')
 		subject = request.POST.get('subject','')
 		email = request.POST.get('email','')
 		message = request.POST.get('message','')
-		message = str(message) + "\nname : "+ name
+		message += "\n\nName: "+ name + "\nEmail: "+email
 		try:
 			send_mail(subject,message,email,['Links2webContact@gmail.com'])
-			print('Mail sent')
 		except BadHeaderError:
 			return HttpResponse("Invalid Header present")
-		return redirect(reverse('home'))
-	return render(request,'home/contact.html',{'type':type})
+		request.session["email_sent"] = True
+	return render(request,'home/contact.html',{'type':type,"email_sent":request.session.get("email_sent")})
 
 def all_websites(request,**kwargs):
-
 	categories = Categories.objects.all()
 	queryset = Categories.objects.get(id=kwargs['pk'],category=kwargs['name'])
 	context = {}
@@ -170,36 +169,26 @@ def all_websites(request,**kwargs):
 			context['Sub_category'] = kwargs['sub_category']
 		else:
 			context['websites'] = queryset.websites.order_by(F('Number').asc(nulls_last=True),F('website').asc(nulls_last=True))
+		print(context['websites'].values("Number","website"))
 
 	try:
 		country = visitors_location(visitor_ip_address(request))
 	except:
 		country = None
 	context['Category_name'] = queryset.category
-	website_obj = context['websites'].order_by(F('Number').asc(nulls_last=True),F('website').asc(nulls_last=True))
-	
+	website_obj = context["websites"]	
 	context['websites'] = website_obj.exclude(Countries=country)
 	websites = website_obj.filter(Countries=country)
-	context['websites'] = list(context['websites'])
-	websites = list(websites)
-	try:
-		for i in range(len(websites)):
-			context['websites'].insert(i,websites[i])
-	except IndexError:
-		print("Index error")
-
+	context['websites'] = list(chain(websites,context["websites"]))
 
 	website_set = context['websites']
-	print("Final result" , website_set)
 	
 	page = request.GET.get('page')
 	paginator = Paginator(website_set,20)
 	
 	if request.is_ajax():
 		try:
-			print("page :",page)
 			context['websites'] = paginator.page(page)
-			print(context['websites'])
 			web_html = loader.render_to_string('home/load_more_websites.html',{ 'websites' : context['websites'],'Category':queryset, })
 			return HttpResponse(web_html)
 		except EmptyPage:
@@ -219,7 +208,6 @@ def Login(request):
 		username = request.POST.get('username')
 		password = request.POST.get('password')
 		user = authenticate(request,username=username,password=password)
-		print(user)
 		if user is not None:
 			login(request,user)
 			return redirect(reverse('control_panel'))
@@ -227,12 +215,10 @@ def Login(request):
 			context['error'] = "Wrong Username or Password"
 			return render(request,"home/login-page.html",context)
 
-
 	return render(request,"home/login-page.html",context)
 
 def Logout(request):
 	logout(request)
-	print(request.user)
 	return render(request,"home/Logout.html",{})
 
 
@@ -241,19 +227,15 @@ def add_category(HttpRequest):
 	form = add_Categories()
 	if HttpRequest.method == "POST":
 		form = add_Categories(HttpRequest.POST)
-		print("Checking validity")
 		if form.is_valid():
-			print("Form valid")
 			form = form.save(commit=False)
 			form.icon = HttpRequest.FILES.get("icon")
 			form.save()
-			print("saved......")
 			category = Categories(pk=form.pk)
 			for sub_category in HttpRequest.POST.getlist('sub_categories'):
 				sub_Category = Sub_Categories(Category=category.category,Sub_Category=sub_category)
 				sub_Category.save()
 				category.sub_categories.add(sub_Category.pk)
-			print("Sub_Category saved and added")
 			return redirect(reverse("add_category"))
 	return render(HttpRequest,'home/category-form.html',{'form' : form })
 
@@ -278,16 +260,12 @@ class update_category(UpdateView):
 		
 		return reverse('update_category')
 	def form_invalid(self,form):
-		print("Form Invalid",form.errors)
 		return HttpResponse(form.errors)
 	def form_valid(self,form):
 		form = form.save(commit=False)
-		print(self.request.FILES)
 		if self.request.FILES.get("icon"):
-			print("icon exists")
 			form.icon = self.request.FILES.get("icon")
 		category = form
-		print(self.request.POST)
 		sub_categories_list = self.request.POST.getlist('sub_categories')
 		new_sub_categories = self.request.POST.getlist('new_sub_categories')
 		for sub_category in new_sub_categories:
@@ -295,7 +273,6 @@ class update_category(UpdateView):
 			sub_categories_list.append(sub_category.pk)
 		category.sub_categories.set(sub_categories_list)
 		unselected_subcategories_list = Sub_Categories.objects.filter(categories=None)
-		print(unselected_subcategories_list)
 		unselected_subcategories_list.delete()
 		return super().form_valid(form)
 
@@ -314,128 +291,74 @@ class delete_category(DeleteView):
 		return self.render_to_response(context)
 	success_url = reverse_lazy('delete_category_select')
 
-
-
 @permission('Websites.add_websites')
 def add_websites(request):
 	Category = Categories.objects.all()
 	form = add_Websites()
 	if request.method == 'POST':
-		print(request.POST)
 		form = add_Websites(request.POST)
 		if form.is_valid():
 			form = form.save(commit=False)
-			inc = 0
-			all_numbers = request.POST.getlist('Number')
-			all_added_websites = request.POST.getlist('website')
-			all_url = request.POST.getlist('url')
-			while inc < len(all_added_websites):
-				if all_numbers[inc].isdigit():
-					form.Number = int(all_numbers[inc])
-				else:
-					form.Number = None
-				form.website = all_added_websites[inc]
-				form.url = all_url[inc]
-
-				form.category = Categories.objects.get(id = int(request.POST.get('category')))
-				
-				form = Websites(category=form.category,website=form.website,url=form.url,Number=form.Number)
-				form.save()
-				print(form,form.pk)
-				form.Tags.add(*request.POST.getlist('Tags'))
-				print("Adding tags.For pk :",form.pk)
-				form.Countries.add(*request.POST.getlist('Countries'))
-
-				form.save()
-				print(form.Tags.all())
-
-				inc+=1
+			website_url = form.url
+			if website_url.startswith("http://"):
+				website_url = website_url.lstrip("http://")
+			elif website_url.startswith("https://"):
+				website_url = website_url.lstrip("https://")
+			form.url = website_url
+			form.save()
+			form.Countries.set(request.POST.getlist("Countries"))
+			form.Tags.set(request.POST.getlist("Tags"))
+			return HttpResponse(form.website + " has been added successfully.")
 		else:
-			return HttpResponse(form.errors.as_ul())
+			return HttpResponseServerError(form.errors.as_ul())
 		return redirect(reverse('add_websites'))
 	return render(request,"home/form.html",{'form':form,'Category' : Category,})
 
 
 @permission('Websites.update_websites')
-def update_single_website_select(request):
-	category = Categories.objects.all()
-	context = {"categories":category,}
-	return render(request,"home/update_single_website_select.html",context)
+def update_websites(request):
 
-class update_website(UpdateView):
-	model = Websites
-	fields = ('__all__')
-	template_name = "home/update_single_website.html"
-	success_url = reverse_lazy('update_single_website_select')
-
-	def form_valid(self,form):
-		self.object = form.save(commit=False)
-
-		print("Valid")
-		print(self.request.POST)
-		self.object.save()
-		self.object.Tags.set(self.request.POST.getlist('Tags'))
-		return super().form_valid(form)
-
-	def get_context_data(self,**kwargs):
-		context = super().get_context_data(**kwargs)
-		context['category'] = Categories.objects.get(pk=self.object.category.pk)
-		return context
-	@permission_generic('Websites.update_websites')
-	def get(self,request,*args,**kwargs):
-		print(self.kwargs)
-		self.object = Websites.objects.get(pk=kwargs['pk'])
-
-		context = self.get_context_data(**kwargs)
-		return self.render_to_response(context)
-
-@permission('Websites.update_websites')
-def update_websites_select(request):
-	return render(request,"home/update_select.html",{'name' : 'Select Categories of websites to update',"type" : "UW","category":Categories.objects.all(),})
-
-
-def update_websites(request,**kwargs):
-	object = Categories.objects.get(pk=kwargs['pk'])
-	kwargs['object'] = object
-	paginator = Paginator(Websites.objects.filter(category=object).order_by(F('Number').asc(nulls_last=True),F('website').asc(nulls_last=True)),5)
-	page = request.GET.get('p')
-	queryset = paginator.get_page(page)
-	kwargs['page_range'] = paginator.page_range
-	kwargs['queryset'] = queryset
-	kwargs['categories'] = Categories.objects.all()
-	kwargs['Countries'] = Countries.objects.all()
-
-	if request.method == "POST":
-		form_queryset = Categories.objects.get(pk=kwargs['pk'])
-		all_numbers = request.POST.getlist('Number')
-		all_added_websites = request.POST.getlist('website')
-		all_url = request.POST.getlist('url')
-		category =  Categories.objects.get(id = int(request.POST.get('category')))
-		inc = 0
-		for website_pk in request.POST.getlist('pk'):
-			print(request.POST)
-			websites_form = Websites.objects.get(pk=website_pk)
-			if all_numbers[inc].isdigit():
-				print(True)
-				websites_form.Number = int(all_numbers[inc])
-			else:
-				print(False)
-				websites_form.Number = None
-			websites_form.website = all_added_websites[inc]
-			websites_form.url = all_url[inc]
-
-			websites_form.category = category
-			print(websites_form.category)
-			websites_form.save()
-			websites_form.Tags.set(request.POST.getlist('Tags_'+str(websites_form.pk)))
-			websites_form.Countries.set(request.POST.getlist('Countries_'+str(websites_form.pk,)))
-			print(inc)
-			inc+=1
-		print(request.POST)
-		print("Saving.....")
-		return redirect(reverse_lazy('update_website'))
-
-	return render(request,"home/update_website.html",kwargs)
+	if request.is_ajax():
+		if request.method == "POST":
+			data = request.POST
+			website = Websites.objects.get(pk=data.get("website-pk"))
+			website.website = data.get("website")
+			website.url = data.get("url")
+			if data.get("Number"):
+				website.Number = data.get("Number")
+			if "category" in data:
+				website.category = Categories.objects.get(pk=data.get("category"))
+			if "sub-category-default" not in data:
+				website.Tags.set(data.getlist("Tags"))
+			if "countries-default" not in data:
+				website.Countries.set(data.getlist("Countries"))
+			website.save()
+			return HttpResponse("Success")
+		elif "get_website_info" in request.GET:
+			website = Websites.objects.get(pk=request.GET.get("get_website_info"))
+			data = {
+				"number": website.Number,
+				"category":website.category.category,
+				"tags": list(website.Tags.values_list("Sub_Category",flat=True)),
+				"countries":list(website.Countries.values_list("Country_name",flat=True))
+			}
+			return JsonResponse(data)
+		elif "fetch_website_text" in request.GET:
+			text = request.GET.get("fetch_website_text")
+			website = Websites.objects.filter(website__icontains=text)
+			paginator = Paginator(website,20)
+			try:
+				if "page_no" in request.GET:
+					websites = paginator.page(request.GET.get("page_no"))
+				else:
+					websites = paginator.page(1)
+				websites = list(websites.object_list.values())
+				return JsonResponse(websites,safe=False)
+			except EmptyPage:
+				return HttpResponse("EMPTY")
+	Category = Categories.objects.all()
+	countries = Countries.objects.all()
+	return render(request,"home/update_website.html",{'Category' : Category,"Countries":countries})
 
 
 @permission('Websites.delete_websites')
@@ -456,14 +379,10 @@ def Slider_data(request):
 #@renderer_classes((TemplateHTMLRenderer,))
 def Categories_and_websites(request):
 	if request.method == 'GET':
-		print(dir(request))
-		print('User : ',request.data)
 		if 'search' in request.GET:
 			Category = Categories.objects.filter(category__icontains = request.GET.get('search'))
-			print(request.GET.get('search'))
 		else:
 			Category = Categories.objects.all()
-		print("'Categories search'",Category)
 		serializer = categories_serializers(Category,context={"request":request},many=True)
 		return Response(serializer.data)
 
@@ -529,7 +448,6 @@ def websites_data(request,**kwargs):
 		country = None
 
 	website_obj = websites.order_by(F('Number').asc(nulls_last=True),F('website').asc(nulls_last=True))
-	print(website_obj)
 	other_websites = website_obj.exclude(Countries=country)
 	websites = website_obj.filter(Countries=country)
 	other_websites = list(other_websites)
@@ -541,7 +459,6 @@ def websites_data(request,**kwargs):
 		print("Index error")
 
 	websites=other_websites
-	print(websites)
 
 	paginator = Paginator(websites,20)
 	try:
@@ -661,8 +578,5 @@ def add_website_external(request):
 			obj = {"category":category.category,"id":category.id,"sub_categories":list(category.sub_categories.values("id","Sub_Category"))}
 			data_list.append(obj)
 		return JsonResponse(data_list,safe=False)
-
-
-
 
 

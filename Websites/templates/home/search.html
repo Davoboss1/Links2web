@@ -2,124 +2,134 @@
 {% load static %}
 {% block header %}
 <div class="header" style="margin-top:50px; padding:5% 0">
-<h2 class="text-center" >Search result</h2>
-<h4 class="text-center" >Showing search result for "{{search_query}}"</h4>
+	<h2 class="text-center">Search result</h2>
+	<h4 class="text-center">Showing search result for "{{search_query}}"</h4>
 </div>
 {% endblock %}
 
-	  {% block content %}
-	{% if type != "website" %}	
-	<div class="container" id="categories">
+{% block content %}
+{% if type != "website" %}
+<div class="container" id="categories">
 
 	{% if result.exists %}
-		<h3 style="text-align:center;">Categories</h3>
-		<hr>			
-		<div class="row">
-		{% for data in result %}					
-			<div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">				
-				<ul style="list-style-type:none; margin:0; padding:0;">				
-				<li >		
-					<div class="categories row align-items-center " >
-					<div class="col-3 col-sm-3 col-md-3 col-lg-3"><img style="width:50px; height:50px;" src="{{data.icon}}"></div>
-					<div class="col-7 col-sm-7 col-md-7 col-lg-7 ">  <a href="{% url 'websites' data.pk data.category %}" style="color:white;"><h5 >{{data.category}} </h5> </a></div>
-					<div class="col-2 col-sm-2 col-md-2 col-lg-2">	<div class="dropdown dropdown-icon" >
-					<a class="now-ui-icons arrows-1_minimal-down" style="color:white; padding:30%;"  href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </a>
-			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-			{% for sub_categories in data.sub_categories.all %}
-			<a class="dropdown-item" href="{% url 'websites' data.pk data.category sub_categories %}">{{sub_categories}}</a>
-			
-			<hr class="no-space"> 
-			{% endfor %}
-			</div>
-			</div>
-		 	</div>
-			</div>					 
-			</li>	
-			<hr class="line">			
-			</ul>				
-			</div>
-		{% endfor %}				
-			<!--
+	<h3 style="text-align:center;">Categories</h3>
+	<hr>
+	<div class="row">
+		{% for data in result %}
+		<div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+			<ul style="list-style-type:none; margin:0; padding:0;">
+				<li>
+					<div class="categories row align-items-center ">
+						<div class="col-3 col-sm-3 col-md-3 col-lg-3"><img style="width:50px; height:50px;"
+								src="{% if data.icon %}{{data.icon.url}}{% endif %}"></div>
+						<div class="col-7 col-sm-7 col-md-7 col-lg-7 "> <a
+								href="{% url 'websites' data.pk data.category %}" style="color:white;">
+								<h5>{{data.category}} </h5>
+							</a></div>
+						<div class="col-2 col-sm-2 col-md-2 col-lg-2">
+							<div class="dropdown dropdown-icon">
+								<a class="fa fa-angle-down fa-thick" style="color:white; padding:30%;" href="#"
+									role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+									aria-expanded="false"> </a>
+								<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+									{% for sub_categories in data.sub_categories.all %}
+									<a class="dropdown-item"
+										href="{% url 'websites' data.pk data.category sub_categories %}">{{sub_categories}}</a>
+
+									<hr class="no-space">
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+				<hr class="line">
+			</ul>
+		</div>
+		{% endfor %}
+		<!--
 			End of row
 			-->
-		</div>
-{% else %}
-<div class="alert alert-danger mt-3" role="alert">
-<h5>Sorry</h5>
-<h6>The Categories you searched are not available</h6>  
-</div>
-{% endif%}
-</div>
-{% endif %}
- {% if type != 'category' %}
- <h3 style="text-align:center;">Websites</h3>
-<div class="container-fluid" style="background-color:white;">
-<div id="websites" class="container">
-	{% if result_websites.object_list.exists %}		
-		<h3 style="text-align:center;">Websites</h3>	
-      		<ol class="all-websites-main-list row" id="main-list">
-      			
-      		{% for website in result_websites %}
-      		<li class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-      			<div class="all-websites-list " >
-      			
-      				<h5 class="text-center">
-      			
-      			<a  href="http://{{website.url|cut:'http://'}}">{{website.website}}</a></h5>
-      		
-      			</div>
-      		</li>
-      			{% endfor %}
-      		</ol>
-      		<div class="d-flex">
-      	{% if result_websites.has_next %}
-      		<button class="btn btn-info btn-sm mx-auto px-3" id="loadmore-btn" data-page-no="2">Load More Websites</button>      		
-      	{% endif %}
-      	</div>
-      	
-      	</div>
-		</div>
-		
-		<div style="display:flex; margin-top:5%;">
-			<button id="theme-button" class="theme-button-light " onclick="changeTheme()">Change Theme</button>	
-		</div>
-		
-{% else %}
-	<div class="container">
-		<div class="alert alert-danger" role="alert">
- 		 <h5>Sorry</h5>
- 		 <h6>The Websites you searched are not available</h6>
- 	 </div>
 	</div>
+	{% else %}
+	<div class="alert alert-danger mt-3" role="alert">
+		<h5>Sorry</h5>
+		<h6>The Categories you searched are not available</h6>
+	</div>
+	{% endif%}
+</div>
 {% endif %}
+{% if type != 'category' %}
+<h3 style="text-align:center;">Websites</h3>
+<div class="container-fluid" style="background-color:white;">
+	<div id="websites" class="container">
+		{% if result_websites.object_list.exists %}
+		<h3 style="text-align:center;">Websites</h3>
+		<ol class="all-websites-main-list row" id="main-list">
+
+			{% for website in result_websites %}
+			<li class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+				<div class="all-websites-list ">
+
+					<h5 class="text-center">
+
+						<a href="http://{{website.url|cut:'http://'}}">{{website.website}}</a></h5>
+
+				</div>
+			</li>
+			{% endfor %}
+		</ol>
+		<div class="d-flex">
+			{% if result_websites.has_next %}
+			<button class="btn btn-info btn-sm mx-auto px-3" id="loadmore-btn" data-page-no="2">Load More
+				Websites</button>
+			{% endif %}
+		</div>
+		{% else %}
+		<div class="container py-2">
+			<div class="alert alert-danger" role="alert">
+				<h5>Sorry</h5>
+				<h6>The Websites you searched are not available</h6>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+</div>
+
+<div style="display:flex;">
+	<button id="theme-button" class="theme-button-light " onclick="changeTheme()">Change Theme</button>
+</div>
+
 {% endif %}
-  {% endblock %}
-  
-  {% block js %}
-  <script>
-  $(function() {
-	$("#loadmore-btn").on("click",function(){
-		var btn = $(this);
-		btn.html('<span>Loading more websites...<i class="now-ui-icons loader_refresh spin"</i></span>');
-		var div = $('#main-list');
-		var page_no = btn.attr("data-page-no");
-		$.ajax({ url: '{{request.get_full_path}}',
-		type: 'GET',
-		data:{'page': page_no},
-		success: function(data) {
-			if(data=="EMPTY"){
-				btn.css("display","none");
-				return;
-			}
-			div.append(data);
-			btn.attr("data-page-no",parseInt(page_no)+1);
-			btn.text('Load More Websites');
-		
-		},
-		error: function(data) {
-			alert('Failed to fetch data.');
-		}});
+{% endblock %}
+
+{% block js %}
+<script>
+	$(function () {
+		$("#loadmore-btn").on("click", function () {
+			var btn = $(this);
+			btn.html('<span>Loading more websites...<i class="fa fa-refresh fa-spin"</i></span>');
+			var div = $('#main-list');
+			var page_no = btn.attr("data-page-no");
+			$.ajax({
+				url: '{{request.get_full_path}}',
+				type: 'GET',
+				data: { 'page': page_no },
+				success: function (data) {
+					if (data == "EMPTY") {
+						btn.css("display", "none");
+						return;
+					}
+					div.append(data);
+					btn.attr("data-page-no", parseInt(page_no) + 1);
+					btn.text('Load More Websites');
+
+				},
+				error: function (data) {
+					alert('Failed to fetch data.');
+				}
+			});
+		});
 	});
- });
-   </script>
-  {% endblock %}
+</script>
+{% endblock %}
