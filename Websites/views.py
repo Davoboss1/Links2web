@@ -353,7 +353,7 @@ def update_websites(request):
 			elif search_type == 'category':
 				website = Websites.objects.filter(category__category__icontains=text)
 			elif search_type == 'sub-category':
-				website = Websites.objects.filter(Tags__Sub_Category__icontains=text)
+				website = Websites.objects.filter(Tags__Sub_Category__icontains=text).distinct()
 
 			paginator = Paginator(website,20)
 			try:
