@@ -338,6 +338,8 @@ def update_websites(request):
 			website = Websites.objects.get(pk=request.GET.get("get_website_info"))
 			data = {
 				"number": website.Number,
+				"website": website.website,
+				"url": website.url,
 				"category":website.category.category,
 				"tags": list(website.Tags.values_list("Sub_Category",flat=True)),
 				"countries":list(website.Countries.values_list("Country_name",flat=True))

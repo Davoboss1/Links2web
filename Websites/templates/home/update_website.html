@@ -164,6 +164,7 @@
 		$("#loadMoreBtn").attr("data-page-no",2);
 
 		$.get("{% url 'update_website' %}",{fetch_website_text:text,"type":$("#searchType").val()},function(data) {
+		    $("#table-body").html("");
 			for(var i = 0; i < data.length; i++){
 				var obj = data[i];
 				$("#table-body").append('<tr><th>' + (i+1) + '</th><td>' + obj.website + '</td><td>' + obj.url + '</td><td><button class="btn btn-light mx-auto" data-toggle="modal" data-target="#update_websiteModal" onclick="getWebsiteInfo(this,' + obj.id + ')" ><span class="fa fa-edit"></span></button></td></tr>');		
@@ -232,8 +233,8 @@ function getWebsiteInfo(btn,id){
 
 		$("#currentCategory").text(data.category);
 		$("#numberInput").val(data.number);
-		$("#websiteInput").val($(btn).parent().prev().prev().first().text());
-		$("#urlInput").val($(btn).parent().prev().first().text());
+		$("#websiteInput").val(data.website);
+		$("#urlInput").val(data.url);
         $("#website-pk").val(id);
 	});
 }
