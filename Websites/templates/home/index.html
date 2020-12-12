@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
-        <meta charset="utf-8" />
-
         <title>
             {% block title %}
                 Links2web. A website that links you to other websites.
             {% endblock %}
         </title>
-
+        <meta charset="utf-8" />
         <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+        <meta name="description" content="Links to other websites in different categories" >
+        {% block meta_keywords %}
+        <meta name="keywords" content="{% for category in category %}{{category.category}} websites,{% endfor %}" >
+        {% endblock %}
+        <meta name="author" content="David Akinfenwa" >
         {% load static %}
         <!-- Fonts and icons -->
         

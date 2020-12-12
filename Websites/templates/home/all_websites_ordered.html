@@ -3,6 +3,9 @@
 {% block title %}
 Links2web , {{Sub_category|default:Category_name}} websites.
 {% endblock %}
+{% block meta_keywords %}
+<meta name="keywords" content="{{Sub_category|default:Category_name}} websites, Websites for {{Sub_category|default:Category_name}}" >
+{% endblock %}
 {% block header %}
 <div class="header" style="margin-top:50px; padding:5% 0">
 <h2 class="text-center" >{{Category_name}}</h2>
@@ -11,7 +14,7 @@ Links2web , {{Sub_category|default:Category_name}} websites.
 </div>
 {% endblock %}
 {% block content %}
-	<div class="container-fluid" style="background-color:white;">
+	<div class="container-fluid" style="background-color:white;" id="theme-cont">
       <div class="container"> 		
       	<ol class="all-websites-main-list row" id="main-list">
       		{% for website in websites %}
