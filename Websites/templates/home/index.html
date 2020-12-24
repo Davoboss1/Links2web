@@ -8,6 +8,7 @@
         </title>
         <meta charset="utf-8" />
         <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+        <meta name="google-site-verification" content="YkHeYHeLDamIzbSCrqgdY3wf3oTJLT4MxECMFd6E1nQ" />
         <meta name="description" content="Links to other websites in different categories" >
         {% block meta_keywords %}
         <meta name="keywords" content="{% for category in category %}{{category.category}} websites,{% endfor %}" >
@@ -15,9 +16,9 @@
         <meta name="author" content="David Akinfenwa" >
         {% load static %}
         <!-- Fonts and icons -->
-        
+
         <link href="https://fonts.googleapis.com/css?family=Lato|Noto+Sans+JP|Open+Sans+Condensed:300|Oswald|Quicksand|Roboto+Condensed|Slabo+27px&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="shortcut icon" href="{% static './assets/img/favicon.png' %}">
         <link href="{% static './assets/css/bootstrap.min.css' %}" rel="stylesheet" />
         <link rel="stylesheet" href="{% static './assets/css/style.css' %}">
@@ -36,7 +37,15 @@
     }
 {% endblock %}
         </style>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LS4QW9KVWX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-LS4QW9KVWX');
+</script>
     </head>
 
     <body style="background:#020525; color:white;">
@@ -44,7 +53,7 @@
             <nav class="navbar navbar-dark fixed-top" >
                 <div id='cssmenu' class="d-flex" >
                     <ul id="head-list" class="mx-auto d-flex">
-                        <li ><a href="{% url 'home' %}" ><span >Home</span></a></li> 
+                        <li ><a href="{% url 'home' %}" ><span >Home</span></a></li>
                         <li class='active has-sub '><a style="display:flex;" onclick="s();" ><span>Search</span> </a>
                             <ul style="max-height:500px; overflow-y:auto; min-width:300px;">
                                 <li >
@@ -68,11 +77,11 @@
                             <ul style="max-height:350px; overflow-y:auto; min-width:250px;">
                                 {% for data in category %}
                                     <li>
-                                        <a href="{% url 'websites' data.pk data.category %}" style="background:#000000; color:#D2EBFB; width:100%; display:flex;"><div class="w-25"><img src="{% if data.icon %}{{data.icon.url}}{% endif %}"  style="height:30px; width:30px;border-radius:5px;" ></div> <div class="w-75 my-auto">{{data.category}}</div></a>		
+                                        <a href="{% url 'websites' data.pk data.category %}" style="background:#000000; color:#D2EBFB; width:100%; display:flex;"><div class="w-25"><img src="{% if data.icon %}{{data.icon.url}}{% endif %}"  style="height:30px; width:30px;border-radius:5px;" ></div> <div class="w-75 my-auto">{{data.category}}</div></a>
                                     </li>
                                 {% endfor %}
                             </ul>
-                        </li> 
+                        </li>
                         <li class="has-sub active"><a href='#' ><span>Contact</span></a>
                             <ul style="max-height:350px; width:250px; overflow-y:auto;">
                                 <li class="has-sub"><a href="" style="background:#171D34; color:white; ">Contact Links2web</a>
@@ -90,7 +99,7 @@
                                         <li><a href="mailto:davidakinfenwa2@gmail.com" style="background:#171D34; color:white;"> <i class="fa fa-envelope"></i> Email</a></li>
                                         <li><a href="https://github.com/Davoboss1" style="background:#171D34; color:white;"> <i class="fa fa-github"></i> GitHub</a></li>
                                         <li><a href="https://www.instagram.com/davo_boss1" style="background:#171D34; color:white;"> <i class="fa fa-instagram"></i> Instagram</a></li>
-                                    </ul>  		
+                                    </ul>
                                 </li>
                             </ul>
                         </li>
@@ -133,9 +142,9 @@
 
                                     <div class="carousel-inner">
 
-                                        {% for slide in slider %}	 	
+                                        {% for slide in slider %}
                                             {% if forloop.counter == 1 %}
-                                                <div class="carousel-item active"> 
+                                                <div class="carousel-item active">
                                                     <h4 class="carousel-text" >
                                                         {% autoescape off %}
                                                             {{slide.Info|urlize}}
@@ -147,7 +156,7 @@
                                         <h4 class="carousel-text">
                                             {% autoescape off %}
                                                 {{slide.Info|urlize}}
-                                            {% endautoescape %}</h4> 	
+                                            {% endautoescape %}</h4>
                                     </div>
                                 {% endif %}
                             {% endfor %}
@@ -212,7 +221,7 @@
                                                             {% for sub_categories in data.sub_categories.all %}
                                                                 <a class="dropdown-item" href="{% url 'websites' data.pk data.category sub_categories %}">{{sub_categories.Sub_Category}}</a>
 
-                                                                <hr class="no-space"> 
+                                                                <hr class="no-space">
                                                             {% endfor %}
 
                                                         </div> </div>
@@ -238,8 +247,8 @@
                             -->
 
 
-                        </div>  
-                    </div>	
+                        </div>
+                    </div>
 
                 {% endblock %}
                 {% block footer %}
@@ -247,63 +256,63 @@
                     <div class="row">
                         <div class="footer-left col-12 col-md-6">
                             <h1>Links2web</h1>
-                            <p class="footer-links"> 
-                                <p style="text-align:center;"> 
+                            <p class="footer-links">
+                                <p style="text-align:center;">
                                 <a href="{% url 'home' %}">Home</a>
                                 ·
                                 <a href="#categories">Categories</a>
                                 ·
                                 <a href="{% url 'contact' 'Contact Links' %}">Contact</a>
-                                
+
                                 <h5 style="text-align:center;"><a href="{% url 'contact' 'Suggest websites or categories' %}">Request or contribute to this website</a> </h5>	<i>(websites,categories,options,issues)</i>
                             </p>
                             <div class="footer-icons" style="padding:0; margin:0;">
                                 <h4 >Contact Developer</h4>
-            
+
                                 <a href="https://facebook.com/david.akinfenwa.9" ><i class="fa fa-facebook"></i></a>
                                 <a href="https://twitter.com/Davo_boss1" ><i class="fa fa-twitter"></i></a>
                                 <a href="https://www.instagram.com/davo_boss1" ><i class="fa fa-instagram"></i></a>
                                 <a href="#" onclick="alert('Linkedin account not available yet');"><i class="fa fa-linkedin"></i></a>
                                 <a href="https://github.com/Davoboss1" ><i class="fa fa-github"></i></a>
                             </div>
-                        </div>      
+                        </div>
                         <div class="footer-center col-12 col-md-6">
                         <h4>Contact Links2web through <span class="fas fa-arrow-down"></span></h4>
                             <div>
                                 <i class="fa fa-instagram"></i>
                                 <p><a href="#" onclick="alert('Instagram account not available yet');" >Links2web Instagram</a></p>
-                                
+
                             </div>
                             <div>
                                 <i class="fa fa-facebook"></i>
                                 <p><a href="#" onclick="alert('Facebook account not available yet');" >Links2web Facebook</a></p>
-                                
+
                             </div>
                             <div>
                                 <i class="fa fa-linkedin"></i>
                                 <p><a href="#" onclick="alert('Linkedin account not available yet');">Links2web Linkedin</a></p>
-                                
-                            </div>    
+
+                            </div>
                             <div>
                                 <i class="fa fa-twitter"></i>
-                                <p><a href="#" onclick="alert('Twitter account not available yet');">Links2web Twitter</a></p>    
+                                <p><a href="#" onclick="alert('Twitter account not available yet');">Links2web Twitter</a></p>
                             </div>
-                        
+
                             <div>
                                 <i class="fa fa-envelope"></i>
                                 <p><a href="mailto:Links2webContact@gmail.com">Links2web Email</a></p>
                             </div>
-                
+
                         </div>
                         <p class="footer-company-name mx-auto" id="copyright">Just Technogies &copy; <script>
                             document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))
                           </script></p>
                     </div>
-                </footer> 
+                </footer>
                 {% endblock %}
 
                 <!--   Core JS Files   -->
-                <script src="{% static './assets/js/custom-js.js' %}"></script>    
+                <script src="{% static './assets/js/custom-js.js' %}"></script>
                 <script src="{% static './assets/js/core/jquery.min.js' %}" type="text/javascript"></script>
                 <script src="{% static './assets/js/core/popper.min.js' %}" type="text/javascript"></script>
                 <script src="{% static './assets/js/core/bootstrap.min.js' %}" type="text/javascript"></script>

@@ -1,21 +1,24 @@
 {% extends 'home/login-page.html' %}
+    {% block title %}
+    Contact page
+    {% endblock %}
 {% block content %}
      <div class="section section-contact-us text-center">
 
       <div class="container my-3" style="border: 2px dotted white;">
         <h2 class="title">Contact us</h2>
         <p class="description">Your reveiw is very important.</p>
-        
+
         <div class="row">
           <div class="col-lg-6 text-center col-md-8 ml-auto mr-auto">
           <form method="post" >
           {% csrf_token %}
-          	  
+
               <input type="text" class="form-control my-3" placeholder="Category" value="{{type}}" readonly name="subject">
               <input type="text" class="form-control my-3" placeholder=" Name..." name="name" required>
               <input type="text" class="form-control my-3" placeholder="Email..." name="email" required>
               <textarea class="form-control"  rows="4" cols="80" placeholder="Type a message..." name="message" required></textarea>
- 
+
             <div class="d-flex my-3">
               <button  type="submit" class="btn btn-light btn-round mx-auto">Send Message</button>
             </div>
